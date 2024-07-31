@@ -1,2 +1,2 @@
-# PySCiST
-A Python package for fingerprinting Source Contribution in Sediment Tracing
+# PySASF
+A Python package for Source Apportionment with Sediment Fingerprinting
