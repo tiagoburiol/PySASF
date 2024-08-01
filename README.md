@@ -1,6 +1,5 @@
 <p style="display: flex; align-items: center;">
-  <img src="https://github.com/tiagoburiol/PySASF/blob/main/images/logo.png?raw=true" alt="Description" style="width:80 px; height:auto; margin-right: 10px;">
-# PySASF
+  <img src="https://github.com/tiagoburiol/PySASF/blob/main/images/logo.png?raw=true" alt="Description" style="width:10 px;">
 </p>
 
 # PySASF
