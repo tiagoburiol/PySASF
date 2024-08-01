@@ -1,4 +1,4 @@
-<img src="https://github.com/tiagoburiol/PySASF/blob/main/images/logo2.png?raw=true" style="height: 70px; width:70px;"/>
+<img src="https://github.com/tiagoburiol/PySASF/blob/main/images/logo2.png?raw=true" style="width:200px;"/>
 
 # PySASF
 **A Python package for Source Apportionment with Sediment Fingerprinting.**
