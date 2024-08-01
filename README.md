@@ -601,7 +601,7 @@ plots.plot_cm_outputs(files, 'nSamp', 'CV')
 
 
     
-![png](output_32_0.png)
+![png](https://github.com/tiagoburiol/PySASF/blob/main/images/cv_plot.png?raw=true)
     
 
 
