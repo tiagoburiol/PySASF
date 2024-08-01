@@ -77,7 +77,7 @@ class BasinData:
             os.makedirs(self.output_folder)
             print(f"Folder '{self.output_folder}' criated succesfully.")
         else:
-            print(f"Saving output files in existent '{self.output_folder}' folder.")
+            print(f"Folder to save output files is: '{self.output_folder}'.")
 
     '''
     calculate_and_save_all_proportions
@@ -86,14 +86,15 @@ class BasinData:
         inicio = time.time()
         print('Calculating all proportions...')
         
-        # Calculating
-        print('Calculating all proportions...')
+        # Calculating...
         combs, Ps = cm.props_from_all_combinations(self, 
                                                solve_opt = self.cm_solver_option,
                                                save=True)
         
         fim = time.time()
-        print ("Done! Time for processing and save:",fim-inicio)
+        print ("Done! Time processing:",fim-inicio)
+        print('Total combinations:',len(combs),', shape of proportions:', Ps.shape)
+        inicio = time.time()
 
         # Saving
         self.set_output_folder()
@@ -102,11 +103,12 @@ class BasinData:
             filename = filename+key+str(len(self.df_dict[key]))
         self.combs_filename = filename+'_combs.txt'
         self.props_filename = filename+'_props.txt'
-        print('Total combinations:',len(combs),', shape of proportions:', Ps.shape)
         print('Saving combinations indexes in:',self.combs_filename)
         print('Saving proportions calculated in:',self.props_filename)
         np.savetxt(self.output_folder+'/'+self.combs_filename, combs,fmt='%s')
         np.savetxt(self.output_folder+'/'+self.props_filename, Ps, fmt='%1.4f')
+        fim = time.time()
+        print ("Time for save files:",fim-inicio)
         
         # Loading if load option is choosed
         if load:
