@@ -1,5 +1,5 @@
 # PySASF
-A Python package for Source Apportionment with Sediment Fingerprinting.
+**A Python package for Source Apportionment with Sediment Fingerprinting.**
 
 PySASF has been developed to provide computational support for research aimed at identifying the percentages contributed by sources in fluvial sediments. The initiative originated from a collaboration between the Department of Soil Science and the Department of Mathematics at the Federal University of Santa Maria, with participation from other educational and research institutions. The initial motivation was to reproduce the results published in Clarke and Minella (2016) and to provide a package of Python routines so that the experiment can be repeated using other data sources.
 
