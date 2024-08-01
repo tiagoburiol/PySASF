@@ -25,7 +25,6 @@ Since the file is load, some information and statistics can be visualizated as i
 arvorezinha.infos()
 ```
 
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -91,21 +90,6 @@ arvorezinha.infos()
 arvorezinha.means()
 ```
 
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -170,21 +154,6 @@ arvorezinha.means()
 arvorezinha.std()
 ```
 
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -248,7 +217,7 @@ arvorezinha.std()
 
 We can easily reproduce the Clarke and Minella (2016) method of measures the increase in uncertainty when sampling sediment fingerprinting. The full explanation of this method is avaliable in the paper "Evaluating sampling efficiency when estimating sediment source contributions to suspended sediment in rivers by fingerprinting". DOI: 10.1002/hyp.10866. The steps needed to achieve the same results described in paper can be executed by a few functions calls as will be shown below
 
-First we need to import the `clarckeminella` analysis module. We will call it `cm`. 
+First we need to import the `clarckeminella` analysis module. 
 
 
 ```python
@@ -306,7 +275,7 @@ display(combs, Ps)
            [-0.0679, -0.138 ,  1.206 ]])
 
 
-The Clarke and Minella's criterion for considering a feasible solution is that the proportion contributed by each source $P_i$ is such that $0<P_i<1$. We can extract the feaseble solutions usin a function `cm_feasebles` of `clarckeminella` analysis module. This is showed below.
+The Clarke and Minella's criterion for considering a feasible solution is that the proportion contributed by each source $P_i$ is such that $0 \leq P_i \leq1$. We can extract the feaseble solutions usin a function `cm_feasebles` of `clarckeminella` analysis module. This is showed below.
 
 
 ```python
