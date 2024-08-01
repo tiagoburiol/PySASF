@@ -316,28 +316,11 @@ Lets draw the confidence region usin the `draw_hull(pts)` function.
 ```python
 cm.draw_hull(Pcr)
 ```
-
-
-    
 ![png](https://github.com/tiagoburiol/PySASF/blob/main/images/confidence_region.png)
     
-
-
-
-
-
-    <scipy.spatial._qhull.ConvexHull at 0x7fbd4ed8f9e0>
-
-
-
-
 ```python
 arvorezinha.props
 ```
-
-
-
-
     array([[ 0.445 , -0.2977,  0.8526],
            [ 0.3761,  0.128 ,  0.4959],
            [ 0.3454,  0.1248,  0.5298],
@@ -345,17 +328,9 @@ arvorezinha.props
            [ 0.4963, -0.0081,  0.5118],
            [ 0.4212, -0.6676,  1.2464],
            [-0.0679, -0.138 ,  1.206 ]])
-
-
-
-
 ```python
 arvorezinha.combs
 ```
-
-
-
-
     array([[ 0,  0,  0,  0],
            [ 0,  0,  0,  1],
            [ 0,  0,  0,  2],
@@ -363,8 +338,6 @@ arvorezinha.combs
            [ 8,  8, 19, 21],
            [ 8,  8, 19, 22],
            [ 8,  8, 19, 23]])
-
-
 
 ### 3. Processing data from reductions and repetitions 
 
