@@ -315,7 +315,7 @@ cm.draw_hull(Pcr)
 
 
     
-![png](output_23_0.png)
+![png]([output_23_0.png](https://github.com/tiagoburiol/PySASF/blob/main/images/confidence_region.png))https://github.com/tiagoburiol/PySASF/blob/main/images/confidence_region.png)
     
 
 
