@@ -1,7 +1,8 @@
-<p style="display: flex; align-items: center;">
-  <img src="https://github.com/tiagoburiol/PySASF/blob/main/images/logo.png?raw=true" alt="Description" style="width:10 px;">
-</p>
-
+<figure>
+  <img
+  src="https://github.com/tiagoburiol/PySASF/blob/main/images/logo.png?raw=true"
+  <figcaption>MDN Logo</figcaption>
+</figure>
 # PySASF
 **A Python package for Source Apportionment with Sediment Fingerprinting.**
 
