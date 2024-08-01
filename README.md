@@ -9,7 +9,7 @@ PySASF has been developed to provide computational support for research aimed at
 ## Install
 Download from [here](https://github.com/tiagoburiol/PySASF/archive/refs/heads/main.zip), unzip and go to pysasf directory. Open `quick_star.ipynb` using [Jupyter Notebook](https://jupyter.org/) or [Jupyter Lab](https://jupyter.org/).
 
-You will needs [NumPy](https://numpy.org/), [Scipy](https://scipy.org/), [MatplotLib](https://matplotlib.org/) instaled. All dependencies can be satisfied by an [Anaconda](https://anaconda.org/) installation.
+You will needs [NumPy](https://numpy.org/), [Scipy](https://scipy.org/), [MatplotLib](https://matplotlib.org/) and [Pandas](https://pandas.pydata.org/)  instaled. All dependencies can be satisfied by an [Anaconda](https://anaconda.org/) installation.
 
 
 
