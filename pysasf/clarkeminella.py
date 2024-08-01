@@ -196,7 +196,7 @@ def cm_feasebles(Ps):
            Ps_feas.append(P)
     return np.array(Ps_feas)
 
-
+#########################################################################################3
 def run_repetitions_and_reduction (bd, key, 
                                         reductions,
                                         repetitions = 50):
@@ -255,10 +255,9 @@ def run_repetitions_and_reduction (bd, key,
 
     # Saving file in cvs
     print ('Saving in', filename+'.csv')
-    df_out.to_csv(filename+'.csv')
-    
+    df_out.to_csv(bd.output_folder+'/'+filename+'.csv')
     return (df_out)
-
+###########################################################################################3
 
 def props_whith_repetitions_and_reduction (df_dict, S_inv, key,
                                            reductions,
