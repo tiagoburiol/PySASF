@@ -1,3 +1,11 @@
+<p style="display: flex; align-items: left;">
+  <img src="[image_url.png](https://github.com/tiagoburiol/PySASF/blob/main/images/logo.png?raw=true)"  style="width:80px; height:auto; margin-right: 10px;">
+  This is the text that will appear next to the image. Adjust the width and height properties in the style attribute to change the image size.
+</p>
+
+
+
+https://github.com/tiagoburiol/PySASF/blob/main/images/logo.png?raw=true
 # PySASF
 **A Python package for Source Apportionment with Sediment Fingerprinting.**
 
