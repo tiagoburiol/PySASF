@@ -288,7 +288,7 @@ print("The total number of feasible solution is:", len(Pfea))
 
 A confidence region can be calculated in 2 dimentions using the $95 \%$ points closest to the feaseble proportions average using distances given by 
 ```math
-$(P_i-P^*)^T S^{-1}(P_i-P^*)
+(P_i-P^*)^T S^{-1}(P_i-P^*)
 ```
 , where $S$ is the $2 \times 2$ variance-covariance matrix of the feasible solutions and 
 $P^*$ is the mean of feaseble proportions.
@@ -378,20 +378,6 @@ tableY = cm.run_repetitions_and_reduction (arvorezinha, 'Y',[2,4,8,12,16,20,24])
 ```
 
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -505,21 +491,6 @@ tableY = cm.run_repetitions_and_reduction (arvorezinha, 'Y',[2,4,8,12,16,20,24])
 tableL = cm.run_repetitions_and_reduction (arvorezinha, 'L',[2,4,8,12,16,20,])
 ```
 
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
