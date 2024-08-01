@@ -1,7 +1,7 @@
 # PySASF
 A Python package for Source Apportionment with Sediment Fingerprinting
 ## Install
-Download and extract...
+You can download from [here](https://github.com/tiagoburiol/PySASF/archive/refs/heads/main.zip)
 
 ## Example of usage
 ### 1. Loading the data
