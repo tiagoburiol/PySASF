@@ -233,9 +233,7 @@ First we need to import the `clarckeminella` analysis module.
 import clarkeminella as cm
 ```
 
-Now we will calculate and save in a file all the combinations possible for proportions contribuited by the sediment sources. The rotine `calculate_and_save_all_proportions()` will create two files, one for all cobinations possible for eath sample in data base, savis its indexes, and the corresponding proportions. The defoult method for calculate is the ordinary least square. Other methods can be choosed by `bd.set_solver_option(option)`. 
-
-Now we will calculate and save in a file all the possible combinations of proportions contributed by the sediment sources. The routine  `calculate_and_save_all_proportions()` will create two files: one for all possible combinations for each sample in the database, saving their indexes, and another file for the corresponding proportions. The default method for calculation is ordinary least squares. Other methods can be chosen using bd.set_solver_option(option).
+Now we will calculate and save in a file all the possible combinations of proportions contributed by the sediment sources. The routine  `calculate_and_save_all_proportions()` will create two files: one for all possible combinations for each sample in the database, saving their indexes, and another file for the corresponding proportions. The default method for calculation is ordinary least squares. Other methods can be chosen using `bd.set_solver_option(option)`.
 
 
 ```python
