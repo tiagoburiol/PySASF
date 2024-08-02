@@ -113,7 +113,7 @@ class BasinData:
         # Loading if load option is choosed
         if load:
             c_name = self.output_folder+'/'+self.combs_filename
-            p_name = self.ooutput_folder+'/'+self.props_filename
+            p_name = self.output_folder+'/'+self.props_filename
             c,p = self.load_combs_and_props_from_files(c_name,p_name)
             self.combs = c
             self.props = p
