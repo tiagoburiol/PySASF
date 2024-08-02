@@ -235,6 +235,8 @@ import clarkeminella as cm
 
 Now we will calculate and save in a file all the combinations possible for proportions contribuited by the sediment sources. The rotine `calculate_and_save_all_proportions()` will create two files, one for all cobinations possible for eath sample in data base, savis its indexes, and the corresponding proportions. The defoult method for calculate is the ordinary least square. Other methods can be choosed by `bd.set_solver_option(option)`. 
 
+Now we will calculate and save in a file all the possible combinations of proportions contributed by the sediment sources. The routine  `calculate_and_save_all_proportions()` will create two files: one for all possible combinations for each sample in the database, saving their indexes, and another file for the corresponding proportions. The default method for calculation is ordinary least squares. Other methods can be chosen using bd.set_solver_option(option).
+
 
 ```python
 arvorezinha.calculate_and_save_all_proportions(load=False)
@@ -257,7 +259,7 @@ combs, Ps = arvorezinha.load_combs_and_props_from_files('C9E9L20Y24_combs.txt',
                                                         'C9E9L20Y24_props.txt')
 ```
 
-We can verify de array data loaded making.
+We can verify the loaded array data as follows:
 
 
 ```python
@@ -323,26 +325,47 @@ cm.draw_hull(Pcr)
 ```
 ![png](https://github.com/tiagoburiol/PySASF/blob/main/images/confidence_region.png)
     
+To randomly take a subset of the solutions, with a sample size of 4 for source L, for example, we can do as shown below.
+
+
 ```python
-arvorezinha.props
+combs,Ps = stats.randon_props_subsamples(arvorezinha, 'Y', 4)
+print ("Suconjunto Ps de tamanho:", Ps.shape[0])
 ```
-    array([[ 0.445 , -0.2977,  0.8526],
-           [ 0.3761,  0.128 ,  0.4959],
-           [ 0.3454,  0.1248,  0.5298],
-           ...,
-           [ 0.4963, -0.0081,  0.5118],
-           [ 0.4212, -0.6676,  1.2464],
-           [-0.0679, -0.138 ,  1.206 ]])
+
+    Suconjunto Ps de tamanho: 6480
+
+
+To make the plot of the points and the 95% confidence region and save it to a file, we proceed as follows:
+
+
 ```python
-arvorezinha.combs
+plots.draw_hull(P_cr, savefig = True, title = 'Confidence region 95% whith Y size = 2')
 ```
-    array([[ 0,  0,  0,  0],
-           [ 0,  0,  0,  1],
-           [ 0,  0,  0,  2],
-           ...,
-           [ 8,  8, 19, 21],
-           [ 8,  8, 19, 22],
-           [ 8,  8, 19, 23]])
+
+A figure will be saved in the output folder. If we want to create several plots with a sequence of reductions in the number of samples for a given source, we can proceed as follows.
+
+
+```python
+import stats
+for n in [2,4,8,12,16,20,24]:
+    combs,Ps = stats.randon_props_subsamples(arvorezinha, 'Y', n)
+    P_feas = cm.cm_feasebles(Ps)
+    P_cr = stats.confidence_region(P_feas,space_dist='mahalanobis0')
+    name = 'confidence_region_Y'+str(n)
+    ax = plots.draw_hull(P_cr, savefig = True, filename = name)
+    print('Saving figure named:', name)
+    
+```
+
+    Saving figure named: confidence_region_Y2
+    Saving figure named: confidence_region_Y4
+    Saving figure named: confidence_region_Y8
+    Saving figure named: confidence_region_Y12
+    Saving figure named: confidence_region_Y16
+    Saving figure named: confidence_region_Y20
+    Saving figure named: confidence_region_Y24
+
 
 ### 3. Processing data from reductions and repetitions 
 
