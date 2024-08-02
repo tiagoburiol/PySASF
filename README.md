@@ -238,6 +238,7 @@ Now we will calculate and save in a file all the possible combinations of propor
 
 ```python
 arvorezinha.calculate_and_save_all_proportions(load=False)
+
 ```
 
     Calculating all proportions...
@@ -247,7 +248,7 @@ arvorezinha.calculate_and_save_all_proportions(load=False)
     Done! Time for processing and save: 2.0073955059051514
 
 
-If you want to store the proportions solutions and the combination indexes, you can choose `load=True`(is the defoult option) when call the rotine above. The proportions solutions and the combination indexes wil be  stored on `BasinData`object class.
+If you want to load and store the proportions solutions and the corresponding indexes of combinations, you can choose `load=True`(is the defoult option) when call the rotine above. The proportions solutions and the combination indexes will be stored on `BasinData`object class.
 
 For read the files created and load proportions solutions and the combination indexes we can use the `load_combs_and_props_from_files(combs_file, props_file)` function. A example is showed below.
 
@@ -284,7 +285,7 @@ display(combs, Ps)
            [-0.0679, -0.138 ,  1.206 ]])
 
 
-The Clarke and Minella's criterion for considering a feasible solution is that the proportion contributed by each source $P_i$ is such that $0 &lt P_i &lt 1$. We can extract the feaseble solutions usin a function `cm_feasebles` of `clarckeminella` analysis module. This is showed below.
+The Clarke and Minella's criterion for considering a feasible solution is that the proportion contributed by each source $P_i$ is such that $0 &lt P_i &lt 1$. We can extract the feaseble solutions usin a function `cm_feasebles` of `clarckeminella` module. This is showed below.
 
 
 ```python
@@ -299,7 +300,7 @@ A confidence region can be calculated in 2 dimentions using the $95 \%$ points c
 ```math
 (P_i-P^*)^T S^{-1}(P_i-P^*)
 ```
-, where $S$ is the $2 \times 2$ variance-covariance matrix of the feasible solutions and 
+where $S$ is the $2 \times 2$ variance-covariance matrix of the feasible solutions and 
 $P^*$ is the mean of feaseble proportions.
 
 A more detailed explanation can be can be obtained in the Clarke and Minella's paper.
