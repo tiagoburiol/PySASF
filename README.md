@@ -4,7 +4,8 @@
 
 **A Python package for Source Apportionment with Sediment Fingerprinting.**
 
-PySASF has been developed to provide computational support for research aimed at identifying the percentages contributed by sources in fluvial sediments. The initiative originated from a collaboration between the Department of Soil Science and the Department of Mathematics at the Federal University of Santa Maria, with participation from other educational and research institutions. The initial motivation was to reproduce the results published in [Clarke and Minella (2016)](https://onlinelibrary.wiley.com/doi/abs/10.1002/hyp.10866) and to provide a package of Python routines so that the experiment can be repeated using other data sources.
+PySASF was developed to provide computational support for research aimed at identifying the contributions of various sources to fluvial sediments. This initiative originated from a collaboration between the Department of Soil Science and the Department of Mathematics at the Federal University of Santa Maria, with participation from other educational and research institutions. The initial motivation was to reproduce the results published in [Clarke and Minella (2016)](https://onlinelibrary.wiley.com/doi/abs/10.1002/hyp.10866) and to create a package of Python routines to facilitate the replication of the experiment with other data sources.
+
 
 ## Install
 Download from [here](https://github.com/tiagoburiol/PySASF/archive/refs/heads/main.zip), unzip and go to pysasf directory. Open `quick_star.ipynb` using [Jupyter Notebook](https://jupyter.org/) or [Jupyter Lab](https://jupyter.org/).
@@ -16,19 +17,17 @@ You will needs [NumPy](https://numpy.org/), [Scipy](https://scipy.org/), [Matplo
 ## Example of usage
 ### 1. Loading the data
 
-A good begin is to import the object class `BasinData` to instance and store data from a basin sediment sources. A instance of `BasinData` should be created and data load from a file. Is usual store data files in the 'data' directory one level above. The import and the creation of a instance of `BasinData` is showed below.
-
+A good starting point is to import the `BasinData` object class to store data from a basin's sediment sources. An instance of BasinData should be created, and the data should be loaded from a file. It is common to store data files in the 'data' directory one level above. The import and creation of an instance of `BasinData` are shown below.
 
 ```python
 from basindata import BasinData
 ```
 
-
 ```python
 arvorezinha = BasinData("../data/arvorezinha_database.xlsx")
 ```
 
-Since the file is load, some information and statistics can be visualizated as in the following examples .
+Once the file is loaded, some information and statistics can be visualized, as shown in the following examples.
 
 
 ```python
