@@ -13,12 +13,15 @@ import numpy as np
 from itertools import product
 from IPython.display import clear_output
 from scipy.spatial import ConvexHull
+import time
 
 #PySASF imports
 import distances 
 import solvers
+import stats
 
-
+'''
+moved to basindata.py
 ################################################################################
 def props_from_all_combinations(bd, solve_opt='ols',save=True):
     from itertools import product
@@ -60,8 +63,10 @@ def props_from_all_combinations(bd, solve_opt='ols',save=True):
         Ps[k] = P
     return combs, Ps
 ################################################################################
+'''
 
-
+'''
+moved to stats.py
 def randon_props_subsamples(bd, key, n):
     Ps = bd.props
     combs = bd.combs
@@ -70,21 +75,24 @@ def randon_props_subsamples(bd, key, n):
     rand = np.random.choice(np.arange(size), n, replace=False)
     selected_combs = combs[np.where(np.isin(combs[:,key_idx],rand))]
     selected_Ps = Ps[np.where(np.isin(combs[:,key_idx],rand))]
-    return selected_Ps
+    return selected_combs, selected_Ps
 
 ################################################################################
+'''
 def cm_feasebles(Ps):
-    Ps_feas = []
-    for P in Ps:
-        #if np.all(P[0:2]>=0) and np.sum(P[0:2]<=1):
-        if np.all(P>0) and np.sum(P<1):
-           Ps_feas.append(P)
+    Ps_feas = Ps[[np.all(P>0) for P in Ps]]
+   # Ps_feas = []
+   # for P in Ps:
+   #     if np.all(P>0):# and np.sum(P)<=1:
+   #        Ps_feas.append(P)
+            
     return np.array(Ps_feas)
 
 #########################################################################################3
 def run_repetitions_and_reduction (bd, key, 
                                         reductions,
                                         repetitions = 50):
+    inicio = time.time()
     cv = lambda x: np.std(x) / np.mean(x) *100
     CVs = []
     areas_medias = []
@@ -107,10 +115,10 @@ def run_repetitions_and_reduction (bd, key,
             clear_output(wait=True)
             print ('Processing for', n, 'subsamples of',key, ', repetition number', i)
 
-            Ptot = randon_props_subsamples(bd, key, n)
+            _,Ptot = stats.randon_props_subsamples(bd, key, n)
             Pfea =  cm_feasebles(Ptot) 
             if Pfea.shape[0]>=4:
-                Pcr = confidence_region(Pfea[:,0:2], p = 95)
+                Pcr = stats.confidence_region(Pfea[:,0:2], p = 95)
                 hull = ConvexHull(Pcr)
                 areas.append(hull.volume)
         
@@ -129,10 +137,11 @@ def run_repetitions_and_reduction (bd, key,
 
         CVs.append(cv(areas))
         areas_medias.append(np.mean(areas))
-
     
     print('Done!')
     clear_output(wait=True)
+    fim = time.time()
+    print ("Time for all runs:",fim-inicio)
     
     df_out = pd.DataFrame(df_out_data, columns=df_out_cols)
     display(df_out)
@@ -145,18 +154,19 @@ def run_repetitions_and_reduction (bd, key,
 ###########################################################################################3
 
 
-def confidence_region(P, p = 95):
-    Pm = np.mean(P, axis=0)
-    dist = distances.mahalanobis0_dist(P, Pm)
-    #dist = distances.mahalanobis_dist(P, Pm)
-    
-    sorted_idx = np.argsort(dist)
-    Psorted = P[sorted_idx]
-
-    # em ordem crescente
-    end_idx = int((p/100)*len(Psorted))
-    #print ("Os 95% mais próximos:", Psorted[:,:end_idx])
-    return (Psorted[:end_idx,:])
+def confidence_region(P):
+    return stats.confidence_region(P, p = 95, space_dist='mahalanobis0')
+#    Pm = np.mean(P, axis=0)
+#    dist = distances.mahalanobis0_dist(P, Pm)
+#    #dist = distances.mahalanobis_dist(P, Pm)
+#    
+#    sorted_idx = np.argsort(dist)
+#    Psorted = P[sorted_idx]#
+#
+#    # em ordem crescente
+#    end_idx = int((p/100)*len(Psorted))
+#    #print ("Os 95% mais próximos:", Psorted[:,:end_idx])
+#    return (Psorted[:end_idx,:])
 
 
 

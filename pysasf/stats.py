@@ -48,21 +48,36 @@ def std(bd):
     #display(std.round(2))
     return(std.astype(float).round(2))
 
+
+def randon_props_subsamples(bd, key, n):
+    Ps = bd.props
+    combs = bd.combs
+    key_idx = list(bd.df_dict.keys()).index(key)
+    size = len(bd.df_dict[key])
+    rand = np.random.choice(np.arange(size), n, replace=False)
+    selected_combs = combs[np.where(np.isin(combs[:,key_idx],rand))]
+    selected_Ps = Ps[np.where(np.isin(combs[:,key_idx],rand))]
+    return selected_combs, selected_Ps
+
 '''
 Calculate de confidence region
 '''    
-def confidence_region(P, p = 95, spacedist= 'mahalanobis'):
-        if P.shape[0]>2:
-            P=P[0:2,:]
-        Pm = np.mean(P, axis=1)
-        if spacedist=='mahalanobis':
-            dist = distances.mahalanobis_dist(P, Pm)
-        if spacedist=='euclidean':
-            dist = distances.euclidean_dist(P)
-        
-        #dist = self.mahalanobis_dist(P, Pm)
-        sorted_idx = np.argsort(dist)
-        Psorted = P.T[sorted_idx].T
-        end_idx = int((p/100)*len(Psorted.T))
-        return (Psorted[:,:end_idx])
+def confidence_region(P, p = 95, space_dist='mahalanobis'):
+    Pm = np.mean(P, axis=0)
+    if space_dist=='mahalanobis':
+        dist = distances.mahalanobis_dist(P, Pm)
+    elif space_dist=='mahalanobis0':
+        dist = distances.mahalanobis0_dist(P, Pm)
+    else:
+        print('The confidence region space distance',space_dist,'not avaliable')
+
+    
+    sorted_idx = np.argsort(dist)
+    Psorted = P[sorted_idx]
+
+    # em ordem crescente
+    end_idx = int((p/100)*len(Psorted))
+    #print ("Os 95% mais próximos:", Psorted[:,:end_idx])
+    return (Psorted[:end_idx,:])
+
 

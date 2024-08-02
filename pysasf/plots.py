@@ -41,7 +41,7 @@ n is de dimention of each point. Then, x_col and y_cols are
 the columns index corresponding of the x and y coordinates of 
 points to be plotted.
 '''
-def draw_hull(P, savefig = True, x_col=0, y_col=1, 
+def draw_hull(P, savefig = False, x_col=0, y_col=1, 
               title='Convexhull', path='../output', filename='convex_hull'):
     from scipy.spatial import ConvexHull, convex_hull_plot_2d
     fig = plt.figure(figsize=(4, 4))  
@@ -65,9 +65,18 @@ def draw_hull(P, savefig = True, x_col=0, y_col=1,
     plt.xlim((-0.1,1.0))
     plt.ylim((-0.1,1.0))
     if savefig:
-        plt.savefig(path+'/'+title+'.eps')
-    #plt.show()
-    return None
+        plt.savefig(path+'/'+filename+'.png')
+        plt.close()
+    return None #plt.gca()
 
-
+def props_histo(props):
+    n = props.shape[0]
+    dim = props.shape[1]
+    fig = plt.figure(figsize=(5*dim,3))
+    
+    for j in range(dim):
+        ax = plt.subplot(1,dim,j+1)
+        n, bins, patches = plt.hist(props[:,j], bins=50) 
+        plt.title('P'+str(j))
+    plt.show()
 

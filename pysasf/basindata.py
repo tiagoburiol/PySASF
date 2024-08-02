@@ -16,15 +16,16 @@ import seaborn as sns
 from matplotlib.legend import Legend
 import time
 
+
 from readers import read_datafile
 import stats
+import solvers
 import clarkeminella as cm
 import os
 
 class BasinData:
 
     def __init__(self, filename):
-        from readers import read_datafile
         df = read_datafile(filename)
         # load data from file
         #df = pd.read_excel(filename)
@@ -42,6 +43,7 @@ class BasinData:
         self.cm_all_Pfea = None
         self.cm_solver_option = 'ols'
         self.output_folder='../output'
+        self.solver_option = 'ols'
         
         # split data on a dataframes dictionary
         names = df[df.columns[0]].unique()
@@ -79,6 +81,48 @@ class BasinData:
         else:
             print(f"Folder to save output files is: '{self.output_folder}'.")
 
+    ################################################################################
+    def calcule_all_props(self, solve_opt='ols'):
+        from itertools import product
+        df_dict = self.df_dict
+        S_inv = self.S_inv
+    
+        filename = ''
+        idx = []
+        keys = list(df_dict.keys())
+        for key in keys:
+            size = len(df_dict[key])
+            filename=filename+key+str(size)
+            idx.append(list(np.arange(size)))
+        self.filename = filename
+    
+        # Gera todas as combinações possíveis
+        combs = list(product(*idx))
+        total = len(combs)
+
+        #cria um array vazio para todos os Ps
+        Ps = np.empty((len(combs),len(keys)-1)).astype(float)
+
+        for k, comb in enumerate(combs):
+            X = []
+            for i in range(len(comb)-1):
+                key = keys[i]
+                pos = comb[i]
+                data = df_dict[key].values[pos]
+                X.append(data.astype(float)) 
+            y = df_dict['Y'].values[comb[-1]].astype(float)
+            X = np.array(X).T
+            #SOLVE
+            if solve_opt == 'gls':
+                P = solvers.solve_gls_4x4(y,X,S_inv)
+            if solve_opt == 'ols':
+                P = solvers.solve_ols_4x4(y,X)
+            if solve_opt == 'opt':
+                P = solvers.solve_minimize(y,X)
+            Ps[k] = P
+        return combs, Ps
+    ################################################################################
+    
     '''
     calculate_and_save_all_proportions
     '''
@@ -87,9 +131,12 @@ class BasinData:
         print('Calculating all proportions...')
         
         # Calculating...
-        combs, Ps = cm.props_from_all_combinations(self, 
-                                               solve_opt = self.cm_solver_option,
-                                               save=True)
+        #combs, Ps = cm.props_from_all_combinations(self, 
+        #                                       solve_opt = self.cm_solver_option,
+        #                                       save=True)
+
+        # Calculating...
+        combs, Ps = self.calcule_all_props(solve_opt = self.cm_solver_option)
         
         fim = time.time()
         print ("Done! Time processing:",fim-inicio)
@@ -117,11 +164,7 @@ class BasinData:
             c,p = self.load_combs_and_props_from_files(c_name,p_name)
             self.combs = c
             self.props = p
-        
         return None
-
-  
-
 
     def load_combs_and_props_from_files(self,fc,fp):
         combs = np.loadtxt(fc).astype(int)
@@ -132,50 +175,6 @@ class BasinData:
 
     def set_solver_option(self,solver_option):
         self.cm_solver_option = solver_option
-        
-    '''
-    Calculate de confidence region
-    '''    
-    def confidence_region(self, P, p = 95, spacedist= 'mahalanobis'):
-        if P.shape[0]>2:
-            P=P[0:2,:]
-        Pm = np.mean(P, axis=1)
-        if spacedist=='mahalanobis':
-            dist = self.mahalanobis_dist(P, Pm)
-        if spacedist=='euclidean':
-            dist = self.euclidean_dist(P)
-        
-        #dist = self.mahalanobis_dist(P, Pm)
-        sorted_idx = np.argsort(dist)
-        Psorted = P.T[sorted_idx].T
-        end_idx = int((p/100)*len(Psorted.T))
-        return (Psorted[:,:end_idx])
 
 
-
-    def draw_hull(self, P, ss, n, idx, title = "Convex Hull", savefig = True,
-                        xlabel = "P1", ylabel="P2"): # xlabel = "P1 (CB)", ylabel= "P2 (UR)"
-        from scipy.spatial import ConvexHull#, convex_hull_plot_2d
-        points = P.T   
-        hull = ConvexHull(points)
-
-        #fig = plt.figure(figsize=(6, 4))
-    
-        for simplex in hull.simplices:
-            plt.plot(points[simplex, 0], points[simplex, 1], 'k-')
-
-        #plt.plot(Pm[0],Pm[1], "ro")
-        plt.plot(P[0],P[1], "k," )
-    
-        plt.plot(points[hull.vertices,0], points[hull.vertices,1], 'k-')
-        plt.plot(points[hull.vertices[0],0], points[hull.vertices[0],1], 'k')
-        plt.title(title)
-        plt.xlabel('P1')
-        plt.ylabel('P2')
-        plt.xlim([-0.1, 0.9])
-        plt.ylim([-0.1, 0.9])
-        if savefig == True:
-            plt.savefig(title+'.png')
-        plt.show()
-        return hull
     

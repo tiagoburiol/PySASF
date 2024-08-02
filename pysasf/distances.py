@@ -25,9 +25,9 @@ def mahalanobis_dist(P_arr, Pm):
         dist.append(d)
     return np.array(dist)
 
-def euclidean_dist(P_arr):
+def euclidean_dist(P_arr, Pm):
     from scipy.spatial import distance
-    Pm = np.mean(P_arr, axis=1)
+    #Pm = np.mean(P_arr, axis=1)
     dist = []
     for P in P_arr.T:
        d = distance.euclidean(P, Pm)
