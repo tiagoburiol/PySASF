@@ -296,10 +296,7 @@ print("The total number of feasible solution is:", len(Pfea))
     The total number of feasible solution is: 8132
 
 
-A confidence region can be calculated in 2 dimentions using the $95 \%$ points closest to the feaseble proportions average usin distances given by $(P_i-P^*)^T S^{-1}(P_i-P^*)$, where $S$ is the $2 \times 2$ variance-covariance matrix of the feasible solutions and 
-$P^*$ is the mean of feaseble proportions.
-
-A more detailed explanation can be can be obtained in the Clarke and Minella's paper.
+A confidence region can be calculated in 2 dimentions using the $95 \%$ points closest to the feaseble proportions average using Mahalanobis's distances until the mean of feaseble proportions. A more detailed explanation can be can be obtained in the Clarke and Minella's paper.
 
 The `clarckeminella` module  implement a function for get a confidence region, as can be seen in the example below.
 
