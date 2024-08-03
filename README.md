@@ -285,7 +285,7 @@ display(combs, Ps)
            [-0.0679, -0.138 ,  1.206 ]])
 
 
-The Clarke and Minella's criterion for considering a feasible solution is that the proportion contributed by each source $P_i$ is such that $0<P_i<1$. We can extract the feaseble solutions usin a function `cm_feasebles` of `clarckeminella` analysis module. This is showed below.
+The Clarke and Minella's criterion for considering a feasible solution is that the proportion contributed by each source $P_i$ is such that $0 &lt P_i &lt1$. We can extract the feaseble solutions usin a function `cm_feasebles` of `clarckeminella` analysis module. This is showed below.
 
 
 ```python
