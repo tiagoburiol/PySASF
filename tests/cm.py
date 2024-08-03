@@ -20,7 +20,7 @@ combs, Ps = data.load_combs_and_props_from_files(data.output_folder+'/C9E9L20Y24
 
 print('All combinations indexes:', combs)
 print('All proportions calculated:', Ps)
-
+data
 Pfea = cm.cm_feasebles(Ps)
 print("The total number of feasible solution is:", len(Pfea))
 
@@ -36,13 +36,13 @@ for n in [2,4,8,12,16,20,24]:
     P_cr = stats.confidence_region(P_feas,space_dist='mahalanobis0')
     name = 'confidence_region_Y'+str(n)
     ax = plots.draw_hull(P_cr, savefig = True, 
-                         filename = data.output_folder+name)
+                         path = data.output_folder, filename = name)
 
 cm.run_repetitions_and_reduction (data, 'Y',[2,4,8,12,16,20,24])
 cm.run_repetitions_and_reduction (data, 'L',[2,4,8,12,16,20,])
 
 files = [data.output_folder+'/'+'C9E9L20Y24_Y-2-4-8-12-16-20-24.csv',
-         arvorezinha.output_folder+'/'+'C9E9L20Y24_L-2-4-8-12-16-20.csv']
+         data.output_folder+'/'+'C9E9L20Y24_L-2-4-8-12-16-20.csv']
 
 plots.plot_cm_outputs(files, 'nSamp', 'CV', savefig=False)
 plots.plot_cm_outputs(files, 'nSamp', 'CV', savefig=True)
