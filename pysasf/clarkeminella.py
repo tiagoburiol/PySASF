@@ -14,71 +14,18 @@ from itertools import product
 from IPython.display import clear_output
 from scipy.spatial import ConvexHull
 import time
+import sys
+
 
 #PySASF imports
-import distances 
-import solvers
-import stats
+from pysasf import distances 
+from pysasf import solvers
+from pysasf import stats
 
-'''
-moved to basindata.py
-################################################################################
-def props_from_all_combinations(bd, solve_opt='ols',save=True):
-    from itertools import product
-    df_dict = bd.df_dict
-    S_inv = bd.S_inv
+
+def confidence_region(P):
+    return stats.confidence_region(P, p = 95, space_dist='mahalanobis0')
     
-    filename = ''
-    idx = []
-    keys = list(df_dict.keys())
-    for key in keys:
-        size = len(df_dict[key])
-        filename=filename+key+str(size)
-        idx.append(list(np.arange(size)))
-    bd.filename = filename
-    
-    # Gera todas as combinações possíveis
-    combs = list(product(*idx))
-    total = len(combs)
-
-    #cria um array vazio para todos os Ps
-    Ps = np.empty((len(combs),len(keys)-1)).astype(float)
-
-    for k, comb in enumerate(combs):
-        X = []
-        for i in range(len(comb)-1):
-            key = keys[i]
-            pos = comb[i]
-            data = df_dict[key].values[pos]
-            X.append(data.astype(float)) 
-        y = df_dict['Y'].values[comb[-1]].astype(float)
-        X = np.array(X).T
-        #SOLVE
-        if solve_opt == 'gls':
-            P = solvers.solve_gls_4x4(y,X,S_inv)
-        if solve_opt == 'ols':
-            P = solvers.solve_ols_4x4(y,X)
-        if solve_opt == 'opt':
-            P = solvers.solve_minimize(y,X)
-        Ps[k] = P
-    return combs, Ps
-################################################################################
-'''
-
-'''
-moved to stats.py
-def randon_props_subsamples(bd, key, n):
-    Ps = bd.props
-    combs = bd.combs
-    key_idx = list(bd.df_dict.keys()).index(key)
-    size = len(bd.df_dict[key])
-    rand = np.random.choice(np.arange(size), n, replace=False)
-    selected_combs = combs[np.where(np.isin(combs[:,key_idx],rand))]
-    selected_Ps = Ps[np.where(np.isin(combs[:,key_idx],rand))]
-    return selected_combs, selected_Ps
-
-################################################################################
-'''
 def cm_feasebles(Ps):
     Ps_feas = Ps[[np.all(P>0) for P in Ps]]
    # Ps_feas = []
@@ -113,7 +60,8 @@ def run_repetitions_and_reduction (bd, key,
         filename = filename+'-'+str(n)
         for i in range(repetitions):
             clear_output(wait=True)
-            print ('Processing for', n, 'subsamples of',key, ', repetition number', i)
+            print ('Processing for', n, 'subsamples of',key, 
+                   ', repetition number', i,end=' ', flush=True)
 
             _,Ptot = stats.randon_props_subsamples(bd, key, n)
             Pfea =  cm_feasebles(Ptot) 
@@ -144,7 +92,7 @@ def run_repetitions_and_reduction (bd, key,
     print ("Time for all runs:",fim-inicio)
     
     df_out = pd.DataFrame(df_out_data, columns=df_out_cols)
-    display(df_out)
+    #display(df_out)
     bd.cm_df = df_out
 
     # Saving file in cvs
@@ -152,21 +100,6 @@ def run_repetitions_and_reduction (bd, key,
     df_out.to_csv(bd.output_folder+'/'+filename+'.csv')
     return (df_out)
 ###########################################################################################3
-
-
-def confidence_region(P):
-    return stats.confidence_region(P, p = 95, space_dist='mahalanobis0')
-#    Pm = np.mean(P, axis=0)
-#    dist = distances.mahalanobis0_dist(P, Pm)
-#    #dist = distances.mahalanobis_dist(P, Pm)
-#    
-#    sorted_idx = np.argsort(dist)
-#    Psorted = P[sorted_idx]#
-#
-#    # em ordem crescente
-#    end_idx = int((p/100)*len(Psorted))
-#    #print ("Os 95% mais próximos:", Psorted[:,:end_idx])
-#    return (Psorted[:end_idx,:])
 
 
 

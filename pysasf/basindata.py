@@ -15,13 +15,13 @@ from scipy.linalg import solve
 import seaborn as sns
 from matplotlib.legend import Legend
 import time
-
-
-from readers import read_datafile
-import stats
-import solvers
-import clarkeminella as cm
 import os
+
+
+from pysasf.readers import read_datafile
+from pysasf import stats
+from pysasf import solvers
+from pysasf import clarkeminella as cm
 
 class BasinData:
 
@@ -65,23 +65,24 @@ class BasinData:
         return None
 
     def infos(self):
-        return stats.infos(self)
+        return (stats.infos(self))
         
     def means(self):
-        display(stats.means(self))
+        return (stats.means(self))
     
     def std(self):
-        display(stats.std(self))
+        return (stats.std(self))
 
-    def set_output_folder(self, path='../output'):
+    def set_output_folder(self, path='output'):
+        self.output_folder = path
+        
         # Setting the folder for output saves
         if not os.path.exists(self.output_folder):
             os.makedirs(self.output_folder)
             print(f"Folder '{self.output_folder}' criated succesfully.")
         else:
             print(f"Folder to save output files is: '{self.output_folder}'.")
-
-    ################################################################################
+        self.output_folder = path    ################################################################################
     def calcule_all_props(self, solve_opt='ols'):
         from itertools import product
         df_dict = self.df_dict
@@ -150,8 +151,10 @@ class BasinData:
             filename = filename+key+str(len(self.df_dict[key]))
         self.combs_filename = filename+'_combs.txt'
         self.props_filename = filename+'_props.txt'
-        print('Saving combinations indexes in:',self.combs_filename)
-        print('Saving proportions calculated in:',self.props_filename)
+        print('Saving combinations indexes in:',
+              self.output_folder+'/'+self.combs_filename)
+        print('Saving proportions calculated in:',
+              self.output_folder+'/'+self.props_filename)
         np.savetxt(self.output_folder+'/'+self.combs_filename, combs,fmt='%s')
         np.savetxt(self.output_folder+'/'+self.props_filename, Ps, fmt='%1.4f')
         fim = time.time()

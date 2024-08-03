@@ -11,7 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-import distances
+from pysasf import distances
 '''
 Just get basic infos and print
 '''
