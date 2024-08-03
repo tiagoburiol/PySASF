@@ -1,9 +1,6 @@
-<img src="https://github.com/tiagoburiol/PySASF/blob/main/images/logo_name_small.png?raw=true" style="width:256px"/>
-
-[png](https://github.com/tiagoburiol/PySASF/blob/main/images/logo_name_small.png?raw=true)
+![png](https://github.com/tiagoburiol/PySASF/blob/main/images/logo_name_small.png?raw=true)
 
 # PySASF
-
 **A Python package for Source Apportionment with Sediment Fingerprinting.**
 
 PySASF was developed to provide computational support for research aimed at identifying the contributions of various sources to fluvial sediments. This initiative originated from a collaboration between the Department of Soil Science and the Department of Mathematics at the Federal University of Santa Maria, with participation from other educational and research institutions. The initial motivation was to reproduce the results published in [Clarke and Minella (2016)](https://onlinelibrary.wiley.com/doi/abs/10.1002/hyp.10866) and to create a package of Python routines to facilitate the replication of the experiment with other data sources.
@@ -20,9 +17,8 @@ A good starting point is to import the `BasinData` object class to store data fr
 
 
 ```python
-from basindata import BasinData
+from pysasf.basindata import BasinData
 ```
-
 
 ```python
 arvorezinha = BasinData("../data/arvorezinha_database.xlsx")
@@ -160,6 +156,7 @@ arvorezinha.means()
 
 
 
+
 ```python
 arvorezinha.std()
 ```
@@ -223,6 +220,7 @@ arvorezinha.std()
 </div>
 
 
+
 ### 2. Using the clarkeminela module
 
 We can easily reproduce the Clarke and Minella (2016) method for measuring the increase in uncertainty when sampling sediment fingerprinting. A full explanation of this method is available in the paper 'Evaluating sampling efficiency when estimating sediment source contributions to suspended sediment in rivers by fingerprinting.' DOI: 10.1002/hyp.10866. The steps required to achieve the same results described in the paper can be executed with a few function calls, as shown below.
@@ -231,10 +229,13 @@ First, we need to import the `clarkeminella` analysis module. We will refer to i
 
 
 ```python
-import clarkeminella as cm
+import pysasf.clarkeminella as cm
 ```
 
-Now we will calculate and save in a file all the possible combinations of proportions contributed by the sediment sources. The routine  `calculate_and_save_all_proportions()` will create two files: one for all possible combinations for each sample in the database, saving their indexes, and another file for the corresponding proportions. The default method for calculation is ordinary least squares. Other methods can be chosen using bd.set_solver_option(option). 
+Now we will calculate and save in a file all the possible combinations of proportions contributed by the sediment sources. The routine  `calculate_and_save_all_proportions()` will create two files: one for all possible combinations for each sample in the database, saving their indexes, and another file for the corresponding proportions. The default method for calculation is ordinary least squares. Other methods can be chosen using `arvorezinha.set_solver_option(option)`. 
+
+
+To set your output folder using `arvorezinha.set_output_folder(path='/yourpath/folder')`
 
 
 ```python
@@ -242,12 +243,12 @@ arvorezinha.calculate_and_save_all_proportions(load=False)
 ```
 
     Calculating all proportions...
-    Done! Time processing: 1.8704612255096436
+    Done! Time processing: 1.8580186367034912
     Total combinations: 38880 , shape of proportions: (38880, 3)
-    Folder to save output files is: '../output'.
-    Saving combinations indexes in: C9E9L20Y24_combs.txt
-    Saving proportions calculated in: C9E9L20Y24_props.txt
-    Time for save files: 0.11915707588195801
+    Folder to save output files is: 'output'.
+    Saving combinations indexes in: output/C9E9L20Y24_combs.txt
+    Saving proportions calculated in: output/C9E9L20Y24_props.txt
+    Time for save files: 0.12418818473815918
 
 
 If you want to store the proportions solutions and the combination indexes, you can choose `load=True`(is the defoult option) when call the rotine above. The proportions solutions and the combination indexes wil be  stored on `BasinData`object class.
@@ -287,7 +288,7 @@ display(combs, Ps)
            [-0.0679, -0.138 ,  1.206 ]])
 
 
-The Clarke and Minella's criterion for considering a feasible solution is that the proportion contributed by each source $P_i$ is such that $0 &lt P_i &lt1$. We can extract the feaseble solutions usin a function `cm_feasebles` of `clarckeminella` analysis module. This is showed below.
+The Clarke and Minella's criterion for considering a feasible solution is that the proportion contributed by each source is less than 1 and greater than 0. We can extract the feaseble solutions usin a function `cm_feasebles` of `clarckeminella` analysis module. This is showed below.
 
 
 ```python
@@ -315,7 +316,7 @@ Lets draw the confidence region usin the `draw_hull(pts)` function from `plots`m
 
 
 ```python
-import plots
+from pysasf import plots
 ```
 
 
@@ -325,11 +326,16 @@ plots.draw_hull(Pcr, title = 'Confidence region')
 
 
     
-![png](https://github.com/tiagoburiol/PySASF/blob/main/images/output_23_0.png)
+![png](output_23_0.png)
     
 
 
 To randomly take a subset of the solutions, with a sample size of 4 for source L, for example, we can do as shown below.
+
+
+```python
+from pysasf import stats
+```
 
 
 ```python
@@ -344,14 +350,21 @@ To make the plot of the points and the 95% confidence region and save it to a fi
 
 
 ```python
+P_cr = cm.cm_feasebles(Ps)
+```
+
+
+```python
 plots.draw_hull(P_cr, savefig = True, title = 'Confidence region 95% whith Y size = 2')
 ```
+
+    Plot figure saved in: output/convex_hull.png
+
 
 A figure will be saved in the output folder. If we want to create several plots with a sequence of reductions in the number of samples for a given source, we can proceed as follows.
 
 
 ```python
-import stats
 for n in [2,4,8,12,16,20,24]:
     combs,Ps = stats.randon_props_subsamples(arvorezinha, 'Y', n)
     P_feas = cm.cm_feasebles(Ps)
@@ -362,12 +375,19 @@ for n in [2,4,8,12,16,20,24]:
     
 ```
 
+    Plot figure saved in: output/confidence_region_Y2.png
     Saving figure named: confidence_region_Y2
+    Plot figure saved in: output/confidence_region_Y4.png
     Saving figure named: confidence_region_Y4
+    Plot figure saved in: output/confidence_region_Y8.png
     Saving figure named: confidence_region_Y8
+    Plot figure saved in: output/confidence_region_Y12.png
     Saving figure named: confidence_region_Y12
+    Plot figure saved in: output/confidence_region_Y16.png
     Saving figure named: confidence_region_Y16
+    Plot figure saved in: output/confidence_region_Y20.png
     Saving figure named: confidence_region_Y20
+    Plot figure saved in: output/confidence_region_Y24.png
     Saving figure named: confidence_region_Y24
 
 
@@ -386,129 +406,7 @@ De full analysis can be repreduced and customized usin the routine `run_repetiti
 tableY = cm.run_repetitions_and_reduction (arvorezinha, 'Y',[2,4,8,12,16,20,24])
 ```
 
-    Time for all runs: 46.58677959442139
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>nSamp</th>
-      <th>CV</th>
-      <th>Mean</th>
-      <th>Std</th>
-      <th>Total</th>
-      <th>Feas</th>
-      <th>MeanP1</th>
-      <th>MeanP2</th>
-      <th>MeanP3</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>2</td>
-      <td>13.7425</td>
-      <td>0.3517</td>
-      <td>0.0483</td>
-      <td>3240</td>
-      <td>316</td>
-      <td>0.333497</td>
-      <td>0.245130</td>
-      <td>0.421368</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>4</td>
-      <td>5.8345</td>
-      <td>0.3885</td>
-      <td>0.0227</td>
-      <td>6480</td>
-      <td>1778</td>
-      <td>0.386646</td>
-      <td>0.224973</td>
-      <td>0.388380</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>8</td>
-      <td>3.6424</td>
-      <td>0.3937</td>
-      <td>0.0143</td>
-      <td>12960</td>
-      <td>2192</td>
-      <td>0.335587</td>
-      <td>0.246870</td>
-      <td>0.417542</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>12</td>
-      <td>2.8577</td>
-      <td>0.3989</td>
-      <td>0.0114</td>
-      <td>19440</td>
-      <td>2719</td>
-      <td>0.318279</td>
-      <td>0.241288</td>
-      <td>0.440432</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>16</td>
-      <td>2.1507</td>
-      <td>0.3999</td>
-      <td>0.0086</td>
-      <td>25920</td>
-      <td>5632</td>
-      <td>0.324759</td>
-      <td>0.253202</td>
-      <td>0.422039</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>20</td>
-      <td>1.2768</td>
-      <td>0.4021</td>
-      <td>0.0051</td>
-      <td>32400</td>
-      <td>6739</td>
-      <td>0.342898</td>
-      <td>0.241440</td>
-      <td>0.415661</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>24</td>
-      <td>0.0000</td>
-      <td>0.4024</td>
-      <td>0.0000</td>
-      <td>38880</td>
-      <td>8132</td>
-      <td>0.339917</td>
-      <td>0.245394</td>
-      <td>0.414688</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
+    Time for all runs: 49.323315382003784
     Saving in C9E9L20Y24_Y-2-4-8-12-16-20-24.csv
 
 
@@ -517,117 +415,7 @@ tableY = cm.run_repetitions_and_reduction (arvorezinha, 'Y',[2,4,8,12,16,20,24])
 tableL = cm.run_repetitions_and_reduction (arvorezinha, 'L',[2,4,8,12,16,20,])
 ```
 
-    Time for all runs: 45.14130711555481
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>nSamp</th>
-      <th>CV</th>
-      <th>Mean</th>
-      <th>Std</th>
-      <th>Total</th>
-      <th>Feas</th>
-      <th>MeanP1</th>
-      <th>MeanP2</th>
-      <th>MeanP3</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>2</td>
-      <td>11.3368</td>
-      <td>0.3610</td>
-      <td>0.0409</td>
-      <td>3888</td>
-      <td>611</td>
-      <td>0.409728</td>
-      <td>0.282053</td>
-      <td>0.308221</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>4</td>
-      <td>6.3503</td>
-      <td>0.3805</td>
-      <td>0.0242</td>
-      <td>7776</td>
-      <td>1680</td>
-      <td>0.335932</td>
-      <td>0.232344</td>
-      <td>0.431724</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>8</td>
-      <td>2.8159</td>
-      <td>0.3953</td>
-      <td>0.0111</td>
-      <td>15552</td>
-      <td>3558</td>
-      <td>0.330689</td>
-      <td>0.240967</td>
-      <td>0.428345</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>12</td>
-      <td>2.3193</td>
-      <td>0.3981</td>
-      <td>0.0092</td>
-      <td>23328</td>
-      <td>4861</td>
-      <td>0.340593</td>
-      <td>0.234557</td>
-      <td>0.424849</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>16</td>
-      <td>1.4843</td>
-      <td>0.4017</td>
-      <td>0.0060</td>
-      <td>31104</td>
-      <td>6389</td>
-      <td>0.339818</td>
-      <td>0.242114</td>
-      <td>0.418068</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>20</td>
-      <td>0.0000</td>
-      <td>0.4024</td>
-      <td>0.0000</td>
-      <td>38880</td>
-      <td>8132</td>
-      <td>0.339917</td>
-      <td>0.245394</td>
-      <td>0.414688</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
+    Time for all runs: 44.646848917007446
     Saving in C9E9L20Y24_L-2-4-8-12-16-20.csv
 
 
@@ -636,15 +424,14 @@ Finally the results can be ploted by columns setting the files and the names of 
 
 
 ```python
-import plots
+from pysasf import plots
 files = ['../output/C9E9L20Y24_Y-2-4-8-12-16-20-24.csv',
          '../output/C9E9L20Y24_L-2-4-8-12-16-20.csv']
 
-plots.plot_cm_outputs(files, 'nSamp', 'CV')
+plots.plot_cm_outputs(files, 'nSamp', 'CV', savefig=False)
 ```
 
 
     
-![png](https://github.com/tiagoburiol/PySASF/blob/main/images/output_36_0.png)
-    
+![png](output_38_0.png)
 
