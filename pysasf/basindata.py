@@ -42,7 +42,7 @@ class BasinData:
         self.cm_df = None
         self.cm_all_Pfea = None
         self.cm_solver_option = 'ols'
-        self.output_folder='../output'
+        self.output_folder='output'
         self.solver_option = 'ols'
         
         # split data on a dataframes dictionary
@@ -73,16 +73,18 @@ class BasinData:
     def std(self):
         return (stats.std(self))
 
-    def set_output_folder(self, path='output'):
+    def set_output_folder(self, path):
         self.output_folder = path
-        
+        print ('Setting output folder as:', path)
         # Setting the folder for output saves
         if not os.path.exists(self.output_folder):
             os.makedirs(self.output_folder)
             print(f"Folder '{self.output_folder}' criated succesfully.")
         else:
             print(f"Folder to save output files is: '{self.output_folder}'.")
-        self.output_folder = path    ################################################################################
+
+    
+   ################################################################################
     def calcule_all_props(self, solve_opt='ols'):
         from itertools import product
         df_dict = self.df_dict
@@ -145,7 +147,7 @@ class BasinData:
         inicio = time.time()
 
         # Saving
-        self.set_output_folder()
+        self.set_output_folder(self.output_folder)
         filename = ''
         for key in self.df_dict.keys():
             filename = filename+key+str(len(self.df_dict[key]))

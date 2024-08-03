@@ -12,7 +12,7 @@ print(data.infos())
 print(data.means())
 print(data.std())
 
-data.set_output_folder('output')
+data.set_output_folder('output_test')
 
 data.calculate_and_save_all_proportions(load=False)
 

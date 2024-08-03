@@ -20,6 +20,7 @@ A good starting point is to import the `BasinData` object class to store data fr
 from pysasf.basindata import BasinData
 ```
 
+
 ```python
 arvorezinha = BasinData("../data/arvorezinha_database.xlsx")
 ```
@@ -87,7 +88,6 @@ arvorezinha.infos()
     </tr>
   </tbody>
 </table>
-</div>
 
 
 
@@ -95,6 +95,10 @@ arvorezinha.infos()
 ```python
 arvorezinha.means()
 ```
+
+
+
+
 
 <table border="1" class="dataframe">
   <thead>
@@ -152,7 +156,7 @@ arvorezinha.means()
     </tr>
   </tbody>
 </table>
-</div>
+
 
 
 
@@ -217,7 +221,7 @@ arvorezinha.std()
     </tr>
   </tbody>
 </table>
-</div>
+
 
 
 
@@ -239,16 +243,26 @@ To set your output folder using `arvorezinha.set_output_folder(path='/yourpath/f
 
 
 ```python
+arvorezinha.set_output_folder('../output')
+```
+
+    Setting output folder as: ../output
+    Folder to save output files is: '../output'.
+
+
+
+```python
 arvorezinha.calculate_and_save_all_proportions(load=False)
 ```
 
     Calculating all proportions...
-    Done! Time processing: 1.8580186367034912
+    Done! Time processing: 1.9121606349945068
     Total combinations: 38880 , shape of proportions: (38880, 3)
-    Folder to save output files is: 'output'.
-    Saving combinations indexes in: output/C9E9L20Y24_combs.txt
-    Saving proportions calculated in: output/C9E9L20Y24_props.txt
-    Time for save files: 0.12418818473815918
+    Setting output folder as: ../output
+    Folder to save output files is: '../output'.
+    Saving combinations indexes in: ../output/C9E9L20Y24_combs.txt
+    Saving proportions calculated in: ../output/C9E9L20Y24_props.txt
+    Time for save files: 0.14271330833435059
 
 
 If you want to store the proportions solutions and the combination indexes, you can choose `load=True`(is the defoult option) when call the rotine above. The proportions solutions and the combination indexes wil be  stored on `BasinData`object class.
@@ -326,7 +340,7 @@ plots.draw_hull(Pcr, title = 'Confidence region')
 
 
     
-![png](output_23_0.png)
+![png](images/output_24_0.png)
     
 
 
@@ -358,7 +372,7 @@ P_cr = cm.cm_feasebles(Ps)
 plots.draw_hull(P_cr, savefig = True, title = 'Confidence region 95% whith Y size = 2')
 ```
 
-    Plot figure saved in: output/convex_hull.png
+    Plot figure saved in: ../output/convex_hull.png
 
 
 A figure will be saved in the output folder. If we want to create several plots with a sequence of reductions in the number of samples for a given source, we can proceed as follows.
@@ -375,19 +389,19 @@ for n in [2,4,8,12,16,20,24]:
     
 ```
 
-    Plot figure saved in: output/confidence_region_Y2.png
+    Plot figure saved in: ../output/confidence_region_Y2.png
     Saving figure named: confidence_region_Y2
-    Plot figure saved in: output/confidence_region_Y4.png
+    Plot figure saved in: ../output/confidence_region_Y4.png
     Saving figure named: confidence_region_Y4
-    Plot figure saved in: output/confidence_region_Y8.png
+    Plot figure saved in: ../output/confidence_region_Y8.png
     Saving figure named: confidence_region_Y8
-    Plot figure saved in: output/confidence_region_Y12.png
+    Plot figure saved in: ../output/confidence_region_Y12.png
     Saving figure named: confidence_region_Y12
-    Plot figure saved in: output/confidence_region_Y16.png
+    Plot figure saved in: ../output/confidence_region_Y16.png
     Saving figure named: confidence_region_Y16
-    Plot figure saved in: output/confidence_region_Y20.png
+    Plot figure saved in: ../output/confidence_region_Y20.png
     Saving figure named: confidence_region_Y20
-    Plot figure saved in: output/confidence_region_Y24.png
+    Plot figure saved in: ../output/confidence_region_Y24.png
     Saving figure named: confidence_region_Y24
 
 
@@ -406,7 +420,7 @@ De full analysis can be repreduced and customized usin the routine `run_repetiti
 tableY = cm.run_repetitions_and_reduction (arvorezinha, 'Y',[2,4,8,12,16,20,24])
 ```
 
-    Time for all runs: 49.323315382003784
+    Time for all runs: 49.353819608688354
     Saving in C9E9L20Y24_Y-2-4-8-12-16-20-24.csv
 
 
@@ -415,7 +429,7 @@ tableY = cm.run_repetitions_and_reduction (arvorezinha, 'Y',[2,4,8,12,16,20,24])
 tableL = cm.run_repetitions_and_reduction (arvorezinha, 'L',[2,4,8,12,16,20,])
 ```
 
-    Time for all runs: 44.646848917007446
+    Time for all runs: 45.833038091659546
     Saving in C9E9L20Y24_L-2-4-8-12-16-20.csv
 
 
@@ -425,13 +439,19 @@ Finally the results can be ploted by columns setting the files and the names of 
 
 ```python
 from pysasf import plots
-files = ['../output/C9E9L20Y24_Y-2-4-8-12-16-20-24.csv',
-         '../output/C9E9L20Y24_L-2-4-8-12-16-20.csv']
+files = [arvorezinha.output_folder+'/'+'C9E9L20Y24_Y-2-4-8-12-16-20-24.csv',
+         arvorezinha.output_folder+'/'+'C9E9L20Y24_L-2-4-8-12-16-20.csv']
 
 plots.plot_cm_outputs(files, 'nSamp', 'CV', savefig=False)
 ```
 
 
     
-![png](output_38_0.png)
+![png](images/output_39_0.png)
+    
 
+
+
+```python
+
+```
