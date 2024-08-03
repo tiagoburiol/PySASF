@@ -6,7 +6,23 @@
 PySASF was developed to provide computational support for research aimed at identifying the contributions of various sources to fluvial sediments. This initiative originated from a collaboration between the Department of Soil Science and the Department of Mathematics at the Federal University of Santa Maria, with participation from other educational and research institutions. The initial motivation was to reproduce the results published in [Clarke and Minella (2016)](https://onlinelibrary.wiley.com/doi/abs/10.1002/hyp.10866) and to create a package of Python routines to facilitate the replication of the experiment with other data sources.
 
 ## Install
-Download from [here](https://github.com/tiagoburiol/PySASF/archive/refs/heads/main.zip), unzip and go to notebooks directory. Open `quick_star.ipynb` using [Jupyter Notebook](https://jupyter.org/) or [Jupyter Lab](https://jupyter.org/).
+Download package from [here](https://github.com/tiagoburiol/PySASF/blob/main/dist/pysasf-0.0.2.tar.gz) 
+and install using the following command line in the downloaded file directory.
+
+```python
+$pip3  install pysasf-0.0.2.tar.gz
+```
+
+You can download a python script for testing in [this link](https://github.com/tiagoburiol/PySASF/blob/main/tests/cm.py). You need download de data file in [this link](https://github.com/tiagoburiol/PySASF/blob/main/data/arvorezinha_database.xlsx) and sotre in a folder named `data`in the same directorey os the script. Then you can run using the command 
+
+```python
+$ python cm.py
+```
+This is a terminal version of the example of usage 
+ [quick start](https://github.com/tiagoburiol/PySASF/blob/main/notebooks/quick_start.ipynb) notebook.
+
+
+Alternatively you can download the full project sources [here](https://github.com/tiagoburiol/PySASF/archive/refs/heads/main.zip), unzip and go to notebooks directory. Open `quick_star.ipynb` using [Jupyter Notebook](https://jupyter.org/) or [Jupyter Lab](https://jupyter.org/).
 
 You will needs [NumPy](https://numpy.org/), [Scipy](https://scipy.org/), [MatplotLib](https://matplotlib.org/) and [Pandas](https://pandas.pydata.org/)  instaled. All dependencies can be satisfied by an [Anaconda](https://anaconda.org/) installation.
 
