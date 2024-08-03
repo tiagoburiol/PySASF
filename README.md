@@ -1,4 +1,6 @@
-<img src="https://github.com/tiagoburiol/PySASF/blob/main/images/logo.png?raw=true" style="width:80px;height:80px"/>
+<img src="https://github.com/tiagoburiol/PySASF/blob/main/images/logo_name_small.png?raw=true" style="width:256px"/>
+
+[png](https://github.com/tiagoburiol/PySASF/blob/main/images/logo_name_small.png?raw=true)
 
 # PySASF
 
