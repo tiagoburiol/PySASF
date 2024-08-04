@@ -13,14 +13,15 @@ Download the package from [here](https://github.com/tiagoburiol/PySASF/blob/main
 and install it using the following command line in the directory where the file was downloaded.
 
 ```python
-$pip3  install pysasf-0.0.2.tar.gz
+$ pip3  install pysasf-0.0.2.tar.gz
 ```
 
-You can download a python script for testing in [this link](https://github.com/tiagoburiol/PySASF/blob/main/tests/cm.py). You need download de data file in [this link](https://github.com/tiagoburiol/PySASF/blob/main/data/arvorezinha_database.xlsx) and sotre in a folder named `data`in the same directorey os the script. Then you can run using the command 
+You can download a Python script for testing from [this link](https://github.com/tiagoburiol/PySASF/blob/main/tests/cm.py).You need to download the data file from  [this link](https://github.com/tiagoburiol/PySASF/blob/main/data/arvorezinha_database.xlsx) and store it in a folder named `data` in the same directory as the script. Then you can run it using the command:
 
 ```python
-$ python cm.py!
+$ python cm.py
 ```
+
 This is a terminal version of the example of usage 
  [quick start](https://github.com/tiagoburiol/PySASF/blob/main/notebooks/quick_start.ipynb) notebook.
 
