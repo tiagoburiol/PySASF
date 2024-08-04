@@ -8,8 +8,9 @@ PySASF was developed to provide computational resources for research aimed at id
 This initiative originated from a collaboration between the Department of Soil Science and the Department of Mathematics at the Federal University of Santa Maria, with participation from other educational and research institutions. The initial motivation was to reproduce the results published in [Clarke and Minella (2016)](https://onlinelibrary.wiley.com/doi/abs/10.1002/hyp.10866) and to create a package of Python routines to facilitate the replication of the experiment with other data sources.
 
 ## Install
-Download package from [here](https://github.com/tiagoburiol/PySASF/blob/main/dist/pysasf-0.0.2.tar.gz) 
-and install using the following command line in the downloaded file directory.
+
+Download the package from [here](https://github.com/tiagoburiol/PySASF/blob/main/dist/pysasf-0.0.2.tar.gz) 
+and install it using the following command line in the directory where the file was downloaded.
 
 ```python
 $pip3  install pysasf-0.0.2.tar.gz
@@ -18,7 +19,7 @@ $pip3  install pysasf-0.0.2.tar.gz
 You can download a python script for testing in [this link](https://github.com/tiagoburiol/PySASF/blob/main/tests/cm.py). You need download de data file in [this link](https://github.com/tiagoburiol/PySASF/blob/main/data/arvorezinha_database.xlsx) and sotre in a folder named `data`in the same directorey os the script. Then you can run using the command 
 
 ```python
-$ python cm.py
+$ python cm.py!
 ```
 This is a terminal version of the example of usage 
  [quick start](https://github.com/tiagoburiol/PySASF/blob/main/notebooks/quick_start.ipynb) notebook.
