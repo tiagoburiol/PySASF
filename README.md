@@ -9,7 +9,7 @@ This initiative originated from a collaboration between the Department of Soil S
 
 ## Install
 
-Download the package from [here](https://github.com/tiagoburiol/PySASF/blob/main/dist/pysasf-0.0.2.tar.gz) 
+Download the package from [here](https://github.com/tiagoburiol/PySASF/blob/main/dist/pysasf-0.0.3.tar.gz) 
 and install it using the following command line in the directory where the file was downloaded.
 
 ```python
@@ -425,7 +425,7 @@ for n in [2,4,8,12,16,20,24]:
     Saving figure named: confidence_region_Y24
 
 
-The figure below shows an example of three images generated in the loop above. The images correspond to the confidence regions for subsamples with numbers of elements Y with sizes 2, 8, and 20.
+The figure below shows an example of three images generated in the loop above. The images correspond to the confidence regions for random subsamples with numbers of elements Y with sizes 2, 8, and 20.
 
 ![png](images/regions_small.png)
 

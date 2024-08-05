@@ -17,22 +17,25 @@ from matplotlib.legend import Legend
 import time
 import os
 
-
 from pysasf.readers import read_datafile
 from pysasf import stats
 from pysasf import solvers
 from pysasf import clarkeminella as cm
+from IPython.display import clear_output
 
 class BasinData:
 
     def __init__(self, filename):
         df = read_datafile(filename)
+
+        
         # load data from file
         #df = pd.read_excel(filename)
         
         self.df_dict = {}
         self.cols = df.columns[1:]
         self.sources = []
+        
         self.combs = None
         self.props = None
         #self.combs_filename = ''
@@ -43,7 +46,10 @@ class BasinData:
         self.cm_all_Pfea = None
         self.cm_solver_option = 'ols'
         self.output_folder='output'
+        #self.output_format='txt'
         self.solver_option = 'ols'
+        self.feas = None
+        
         
         # split data on a dataframes dictionary
         names = df[df.columns[0]].unique()
@@ -72,20 +78,76 @@ class BasinData:
     
     def std(self):
         return (stats.std(self))
+        
+    def set_solver_option(self,solver_option):
+        self.cm_solver_option = solver_option
+        
 
+    # SET OUTPUT SOLVER ##############################################################
     def set_output_folder(self, path):
-        self.output_folder = path
-        print ('Setting output folder as:', path)
-        # Setting the folder for output saves
-        if not os.path.exists(self.output_folder):
-            os.makedirs(self.output_folder)
-            print(f"Folder '{self.output_folder}' criated succesfully.")
-        else:
-            print(f"Folder to save output files is: '{self.output_folder}'.")
+        if path!=self.output_folder:
+            self.output_folder = path
+            print ('Setting output folder as:', path)
+            # Setting the folder for output saves
+            if not os.path.exists(self.output_folder):
+                os.makedirs(self.output_folder)
+                print(f"Folder '{self.output_folder}' criated succesfully.")
+            else:
+                print(f"Folder to save output files is: '{self.output_folder}'.")
+
+    # SAVE FILE ########################################################################
+    def _save_array_in_file(self,array,output_folder,filename,fileformat,numberformat):
+        self.set_output_folder(output_folder)
+        if fileformat == 'txt':          
+            if numberformat =='int':
+                np.savetxt(self.output_folder+'/'+filename+'.'+fileformat,array, fmt='%s')
+            if numberformat =='float32':
+                np.savetxt(self.output_folder+'/'+filename+'.'+fileformat,array, fmt='%1.4f')
+
+        
+        if fileformat == 'gzip':
+            import pyarrow as pa
+            import pyarrow.parquet as pq
+            if numberformat =='int':
+                array = np.array(array).astype(np.uint16)
+            if numberformat =='float32':
+                array = np.array(array).astype(np.float32)
+            t = pa.Table.from_arrays([array.ravel()],['col0'])
+            pq.write_table(t, self.output_folder+'/'+filename+'.'+fileformat,
+                           compression='gzip')
+            
+    # LOAD FILE ########################################################################
+    def load_combs_and_props_from_files(self,fc,fp):
+        #import pyarrow as pa
+        import pyarrow.parquet as pq
+        if fc[-3:]=='txt' and fp[-3:]=='txt':
+            combs = np.loadtxt(fc).astype(int)
+            Ps = np.loadtxt(fp)
+            self.combs = combs
+            self.props = Ps
+        if fc[-4:]=='gzip' and fp[-4:]=='gzip':
+            combs = np.array(pq.read_table(fc))
+            array_shape = (int(len(combs)/4),4)
+            combs = combs.reshape(array_shape)
+            self.combs = combs
+            
+            Ps = np.array(pq.read_table(fp))
+            array_shape = (int(len(Ps)/3),3)
+            Ps = Ps.reshape(array_shape)
+            self.props = Ps
+        return combs, Ps
+
+    def save_feasebles(self, Ps, output_folder,filename,fileformat,):
+        booleans = [np.all(P>0) for P in Ps]
+        self._save_array_in_file(booleans,output_folder,filename,fileformat,'int')
+        print ('Feasebles boolean array is sabed in:',output_folder+'/'+filename)
+        self.feas=booleans
+        return None
 
     
    ################################################################################
     def calcule_all_props(self, solve_opt='ols'):
+        from concurrent.futures import ThreadPoolExecutor, as_completed
         from itertools import product
         df_dict = self.df_dict
         S_inv = self.S_inv
@@ -106,7 +168,15 @@ class BasinData:
         #cria um array vazio para todos os Ps
         Ps = np.empty((len(combs),len(keys)-1)).astype(float)
 
+
         for k, comb in enumerate(combs):
+            clear_output(wait=True)
+            percent = np.round(100*k/len(combs),2)
+            if k % 10 == 0:
+                print('Calculating proportion:', k, 'of', len(combs),
+                      '(', percent ,'%)', end='\r', flush=True)
+
+            #clear_output(wait=False)
             X = []
             for i in range(len(comb)-1):
                 key = keys[i]
@@ -123,23 +193,21 @@ class BasinData:
             if solve_opt == 'opt':
                 P = solvers.solve_minimize(y,X)
             Ps[k] = P
+
+            #clear_output(wait=True)
         return combs, Ps
-    ################################################################################
+    ###############################################################################
+
+    
     
     '''
     calculate_and_save_all_proportions
     '''
-    def calculate_and_save_all_proportions(self, load=True):
+    def calculate_and_save_all_proportions(self, format='txt', load=True):
         inicio = time.time()
-        print('Calculating all proportions...')
-        
-        # Calculating...
-        #combs, Ps = cm.props_from_all_combinations(self, 
-        #                                       solve_opt = self.cm_solver_option,
-        #                                       save=True)
-
         # Calculating...
         combs, Ps = self.calcule_all_props(solve_opt = self.cm_solver_option)
+        
         
         fim = time.time()
         print ("Done! Time processing:",fim-inicio)
@@ -151,16 +219,20 @@ class BasinData:
         filename = ''
         for key in self.df_dict.keys():
             filename = filename+key+str(len(self.df_dict[key]))
-        self.combs_filename = filename+'_combs.txt'
-        self.props_filename = filename+'_props.txt'
+        self.combs_filename = filename+'_combs'
+        self.props_filename = filename+'_props'
         print('Saving combinations indexes in:',
               self.output_folder+'/'+self.combs_filename)
         print('Saving proportions calculated in:',
               self.output_folder+'/'+self.props_filename)
-        np.savetxt(self.output_folder+'/'+self.combs_filename, combs,fmt='%s')
-        np.savetxt(self.output_folder+'/'+self.props_filename, Ps, fmt='%1.4f')
+        #np.savetxt(self.output_folder+'/'+self.combs_filename, combs,fmt='%s')
+        #np.savetxt(self.output_folder+'/'+self.props_filename, Ps, fmt='%1.4f')
+        self._save_array_in_file(combs, self.output_folder, self.combs_filename, format,'int')
+        self._save_array_in_file(Ps, self.output_folder, self.props_filename, format,'float32')
+        self.save_feasebles(Ps,self.output_folder,filename+'_feas', format)
         fim = time.time()
         print ("Time for save files:",fim-inicio)
+
         
         # Loading if load option is choosed
         if load:
@@ -171,15 +243,7 @@ class BasinData:
             self.props = p
         return None
 
-    def load_combs_and_props_from_files(self,fc,fp):
-        combs = np.loadtxt(fc).astype(int)
-        Ps = np.loadtxt(fp)
-        self.combs = combs
-        self.props = Ps
-        return combs, Ps
 
-    def set_solver_option(self,solver_option):
-        self.cm_solver_option = solver_option
 
 
     

@@ -19,7 +19,7 @@ from scipy.spatial import distance
 
         
 def plot_cm_outputs(list_of_files, x_key, y_key, 
-                    savefig = True, path='../output'):
+                    savefig = False, path='../output'):
     filename = 'plot_'+str(x_key)+'_'+str(y_key)
     fig = plt.figure(figsize=(8, 4))  
 
@@ -69,6 +69,7 @@ def draw_hull(P, x_col=0, y_col=1, savefig = False,
     def _plot():
         for simplex in hull.simplices:
             plt.plot(points[simplex, 0], points[simplex, 1], 'k-',lw=1)
+        #_ = convex_hull_plot_2d(hull)
         Pm = np.mean(points, axis=0)
         plt.plot(Pm[0],Pm[1], "ro")
         plt.scatter(points[:,0],points[:,1],  marker=".", color='blue',s=0.5)

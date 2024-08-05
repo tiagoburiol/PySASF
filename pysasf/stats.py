@@ -49,14 +49,20 @@ def std(bd):
     return(std.astype(float).round(2))
 
 
-def randon_props_subsamples(bd, key, n):
+def randon_props_subsamples(bd, key, n, only_feasebles=False):
     Ps = bd.props
     combs = bd.combs
     key_idx = list(bd.df_dict.keys()).index(key)
     size = len(bd.df_dict[key])
     rand = np.random.choice(np.arange(size), n, replace=False)
-    selected_combs = combs[np.where(np.isin(combs[:,key_idx],rand))]
-    selected_Ps = Ps[np.where(np.isin(combs[:,key_idx],rand))]
+    
+    if only_feasebles == False:
+        selected_combs = combs[np.where(np.isin(combs[:,key_idx],rand))]
+        selected_Ps = Ps[np.where(np.isin(combs[:,key_idx],rand))]
+    else:
+        #print('randon_props_subsamples->only_feasebles')
+        selected_combs = combs[np.where(np.isin(combs[:,key_idx],rand)  & bd.feas)]
+        selected_Ps = Ps[np.where(np.isin(combs[:,key_idx],rand) & bd.feas)]
     return selected_combs, selected_Ps
 
 '''

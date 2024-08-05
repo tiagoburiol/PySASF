@@ -13,6 +13,7 @@ import numpy as np
 from itertools import product
 from IPython.display import clear_output
 from scipy.spatial import ConvexHull
+import concurrent.futures
 import time
 import sys
 
@@ -27,6 +28,7 @@ def confidence_region(P):
     return stats.confidence_region(P, p = 95, space_dist='mahalanobis0')
     
 def cm_feasebles(Ps):
+    
     Ps_feas = Ps[[np.all(P>0) for P in Ps]]
    # Ps_feas = []
    # for P in Ps:
@@ -54,28 +56,61 @@ def run_repetitions_and_reduction (bd, key,
 
     # get data from df for reductions
     data = bd.df_dict[key].values.astype(float)
+
+
+    # apenas para calcular o numero total de Ps (Melhorar isso)
+    prod =1
+    for k in bd.sources:
+        if k!=key:
+            prod = prod*len(bd.df_dict[k])
+
+
+    def compute_area(pts):
+        hull = ConvexHull(pts)
+        area = hull.volume
+        return area
     
+    
+    #AQUI ACONTECEM AS REDUÇÕES
     for n in reductions:
+        #Total=prod*n
+        points_set = []
+        areas_set = []
         areas = []
         filename = filename+'-'+str(n)
+        
         for i in range(repetitions):
-            clear_output(wait=True)
+            #clear_output(wait=True)
             print ('Processing for', n, 'subsamples of',key, 
-                   ', repetition number', i,end=' ', flush=True)
+                   ', repetition number', i+1,end='\r', flush=True)
 
-            _,Ptot = stats.randon_props_subsamples(bd, key, n)
-            Pfea =  cm_feasebles(Ptot) 
+            
+            #_,Ptot = stats.randon_props_subsamples(bd, key, n, only_feasebles=False)
+            #Pfea =  cm_feasebles(Ptot) 
+            _,Pfea = stats.randon_props_subsamples(bd, key, n, only_feasebles=True)
+            
             if Pfea.shape[0]>=4:
                 Pcr = stats.confidence_region(Pfea[:,0:2], p = 95)
-                hull = ConvexHull(Pcr)
-                areas.append(hull.volume)
+                #<<-------------------------------
+                #hull = ConvexHull(Pcr)    #Aqui
+                #areas.append(hull.volume) 
+                #>>-------------------------------
+                points_set.append(Pcr)
+                #-------------------------------
+        #Aqui
+        #>>-------------------------------
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+             areas = list(executor.map(compute_area, points_set)) 
+        #-------------------------------
+
+
         
         # insert data for df_out
         nSamp = n
         CV = np.round(cv(areas),4)
         Mean = np.round(np.mean(areas),4)
         Std = np.round(np.std(areas),4)
-        Total = len(Ptot)
+        Total=prod*n
         Feas = len(Pfea)
         df_out_data_n = [nSamp,CV,Mean,Std,Total,Feas]
         for i in range(nSources):
@@ -85,14 +120,15 @@ def run_repetitions_and_reduction (bd, key,
 
         CVs.append(cv(areas))
         areas_medias.append(np.mean(areas))
-    
+
+    # Clean the terminal and print some infos
     print('Done!')
     clear_output(wait=True)
     fim = time.time()
     print ("Time for all runs:",fim-inicio)
-    
+
+    # create return dataframe
     df_out = pd.DataFrame(df_out_data, columns=df_out_cols)
-    #display(df_out)
     bd.cm_df = df_out
 
     # Saving file in cvs
