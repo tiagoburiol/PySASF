@@ -425,6 +425,12 @@ for n in [2,4,8,12,16,20,24]:
     Saving figure named: confidence_region_Y24
 
 
+The figure below shows an example of three images generated in the loop above. The images correspond to the confidence regions for subsamples with numbers of elements Y with sizes 2, 8, and 20.
+
+![png](images/regions.png)
+
+
+
 ### 3. Processing data from reductions and repetitions 
 
 As a result of Clarke and Minella's article presents 
