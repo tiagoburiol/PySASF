@@ -28,6 +28,16 @@ This script run a command terminal version of the example of usage
 
 Alternatively you can download the full project sources [here](https://github.com/tiagoburiol/PySASF/archive/refs/heads/main.zip), unzip and go to notebooks directory. Open `quick_star.ipynb` using [Jupyter Notebook](https://jupyter.org/) or [Jupyter Lab](https://jupyter.org/).
 
+If you receive a `No module named 'pysasf'` error message, try including the following lines in the beginning of your notebook:
+
+```python
+import sys
+sys.path.append('/your_path_to/PySASF-main')
+```
+
+Replace `your_path_to` with the path to the directory where PySASF-main was extracted.
+
+
 You will needs [NumPy](https://numpy.org/), [Scipy](https://scipy.org/), [MatplotLib](https://matplotlib.org/) and [Pandas](https://pandas.pydata.org/)  instaled. All dependencies can be satisfied by an [Anaconda](https://anaconda.org/) installation.
 
 ## Example of usage
