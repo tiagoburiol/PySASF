@@ -122,14 +122,13 @@ class BasinData:
             
     # LOAD FILE ########################################################################
     def load_combs_and_props_from_files(self,fc,fp):
-        #import pyarrow as pa
-        import pyarrow.parquet as pq
         if fc[-3:]=='txt' and fp[-3:]=='txt':
             combs = np.loadtxt(fc).astype(int)
             Ps = np.loadtxt(fp)
             self.combs = combs
             self.props = Ps
         if fc[-4:]=='gzip' and fp[-4:]=='gzip':
+            import pyarrow.parquet as pq
             combs = np.array(pq.read_table(fc))
             array_shape = (int(len(combs)/4),4)
             combs = combs.reshape(array_shape)
