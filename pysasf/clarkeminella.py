@@ -78,11 +78,15 @@ def run_repetitions_and_reduction (bd, key,
         areas_set = []
         areas = []
         filename = filename+'-'+str(n)
-        
+
+        t1 = time.time()
         for i in range(repetitions):
-            #clear_output(wait=True)
-            print ('Processing for', n, 'subsamples of',key, 
+            t2 = time.time()
+            if t2-t1>0.5:
+                #clear_output(wait=True)
+                print ('Processing for', n, 'subsamples of',key, 
                    ', repetition number', i+1,end='\r', flush=True)
+                t1=t2
 
             
             #_,Ptot = stats.randon_props_subsamples(bd, key, n, only_feasebles=False)

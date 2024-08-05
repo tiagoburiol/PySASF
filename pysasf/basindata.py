@@ -15,6 +15,8 @@ from scipy.linalg import solve
 import seaborn as sns
 from matplotlib.legend import Legend
 import time
+#import logging
+#logging.basicConfig(level=logging.INFO)
 import os
 
 from pysasf.readers import read_datafile
@@ -22,6 +24,8 @@ from pysasf import stats
 from pysasf import solvers
 from pysasf import clarkeminella as cm
 from IPython.display import clear_output
+
+
 
 class BasinData:
 
@@ -168,14 +172,16 @@ class BasinData:
         #cria um array vazio para todos os Ps
         Ps = np.empty((len(combs),len(keys)-1)).astype(float)
 
-
+        t1 = time.time()
         for k, comb in enumerate(combs):
-            clear_output(wait=True)
-            percent = np.round(100*k/len(combs),2)
-            if k % 10 == 0:
+            t2 = time.time()
+            if t2-t1>1:
+                clear_output(wait=True)
+                percent = np.round(100*k/len(combs),2)
                 print('Calculating proportion:', k, 'of', len(combs),
                       '(', percent ,'%)', end='\r', flush=True)
-
+                t1=t2
+                
             #clear_output(wait=False)
             X = []
             for i in range(len(comb)-1):
@@ -193,7 +199,7 @@ class BasinData:
             if solve_opt == 'opt':
                 P = solvers.solve_minimize(y,X)
             Ps[k] = P
-
+            fim = time.time()
             #clear_output(wait=True)
         return combs, Ps
     ###############################################################################
