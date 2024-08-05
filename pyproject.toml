@@ -7,7 +7,7 @@ packages = ["pysasf"]
 
 [project]
 name = "PySASF"
-version = "0.0.1"
+version = "0.0.4"
 authors = [
   { name="Tiago M Buriol", email="tiagoburiol@gmail.com" },
 ]
@@ -18,7 +18,7 @@ description = "A Python package for Source Apportionment with Sediment Fingerpri
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
-    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 4",
     "License :: OSI Approved :: MIT No Attribution License (MIT-0)",
     "Operating System :: OS Independent",
 ]

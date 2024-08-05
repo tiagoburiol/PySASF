@@ -9,11 +9,11 @@ This initiative originated from a collaboration between the Department of Soil S
 
 ## Install
 
-Download the package from [here](https://github.com/tiagoburiol/PySASF/blob/main/dist/pysasf-0.0.3.tar.gz) 
+Download the package from [here](https://github.com/tiagoburiol/PySASF/blob/main/dist/pysasf-0.0.4.tar.gz) 
 and install it using the following command line in the directory where the file was downloaded.
 
 ```python
-$ pip3  install pysasf-0.0.3.tar.gz
+$ pip3  install pysasf-0.0.4.tar.gz
 ```
 
 You can download a Python script for testing from [here](https://github.com/tiagoburiol/PySASF/blob/main/tests/cm.py). You need to download the data () file from  [here](https://github.com/tiagoburiol/PySASF/blob/main/data/arvorezinha_database.xlsx) and store it in a folder named `data` in the same directory as the script. Then you can run it using the terminal command:
