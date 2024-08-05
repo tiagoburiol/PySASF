@@ -427,7 +427,7 @@ for n in [2,4,8,12,16,20,24]:
 
 The figure below shows an example of three images generated in the loop above. The images correspond to the confidence regions for subsamples with numbers of elements Y with sizes 2, 8, and 20.
 
-![png](images/regions.png)
+![png](images/regions_small.png)
 
 
 
