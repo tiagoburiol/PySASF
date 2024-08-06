@@ -107,8 +107,6 @@ class BasinData:
                 np.savetxt(self.output_folder+'/'+filename+'.'+fileformat,array, fmt='%s')
             if numberformat =='float32':
                 np.savetxt(self.output_folder+'/'+filename+'.'+fileformat,array, fmt='%1.4f')
-
-        
         if fileformat == 'gzip':
             import pyarrow as pa
             import pyarrow.parquet as pq
@@ -133,7 +131,6 @@ class BasinData:
             array_shape = (int(len(combs)/4),4)
             combs = combs.reshape(array_shape)
             self.combs = combs
-            
             Ps = np.array(pq.read_table(fp))
             array_shape = (int(len(Ps)/3),3)
             Ps = Ps.reshape(array_shape)
@@ -174,7 +171,7 @@ class BasinData:
         t1 = time.time()
         for k, comb in enumerate(combs):
             t2 = time.time()
-            if t2-t1>1:
+            if t2-t1>0.5:
                 clear_output(wait=True)
                 percent = np.round(100*k/len(combs),2)
                 print('Calculating proportion:', k, 'of', len(combs),
@@ -199,7 +196,7 @@ class BasinData:
                 P = solvers.solve_minimize(y,X)
             Ps[k] = P
             fim = time.time()
-            #clear_output(wait=True)
+        clear_output(wait=True)
         return combs, Ps
     ###############################################################################
 
