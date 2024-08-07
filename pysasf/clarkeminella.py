@@ -24,17 +24,12 @@ from pysasf import solvers
 from pysasf import stats
 
 
-def confidence_region(P):
-    return stats.confidence_region(P, p = 95, space_dist='mahalanobis0')
+#def confidence_region(P, p = 95, space_dist='mahalanobis0'):
+#    d = space_dist
+#    return stats.confidence_region(P, p = 95, space_dist=d)
     
 def cm_feasebles(Ps):
-    
     Ps_feas = Ps[[np.all(P>0) for P in Ps]]
-   # Ps_feas = []
-   # for P in Ps:
-   #     if np.all(P>0):# and np.sum(P)<=1:
-   #        Ps_feas.append(P)
-            
     return np.array(Ps_feas)
 
 #########################################################################################3
@@ -67,7 +62,7 @@ def run_repetitions_and_reduction (bd, key,
 
     def compute_area(pts):
         hull = ConvexHull(pts)
-        area = hull.volume
+        area = hull.volume # area for 2d points
         return area
     
     
@@ -90,14 +85,14 @@ def run_repetitions_and_reduction (bd, key,
 
             
             #_,Ptot = stats.randon_props_subsamples(bd, key, n, only_feasebles=False)
-            #Pfea =  cm_feasebles(Ptot) 
+            #Pfea =  cm.cm_feasebles(Ptot[:,0:2])
             _,Pfea = stats.randon_props_subsamples(bd, key, n, only_feasebles=True)
-            
+
             if Pfea.shape[0]>=4:
                 Pcr = stats.confidence_region(Pfea[:,0:2], p = 95)
                 #<<-------------------------------
-                #hull = ConvexHull(Pcr)    #Aqui
-                #areas.append(hull.volume) 
+                #hull = ConvexHull(Pcr[:,0:2])    #Aqui
+                #areas.append(hull.volume)
                 #>>-------------------------------
                 points_set.append(Pcr)
                 #-------------------------------
@@ -106,7 +101,6 @@ def run_repetitions_and_reduction (bd, key,
         with concurrent.futures.ThreadPoolExecutor() as executor:
              areas = list(executor.map(compute_area, points_set)) 
         #-------------------------------
-
 
         
         # insert data for df_out

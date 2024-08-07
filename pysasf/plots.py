@@ -54,10 +54,11 @@ the columns index corresponding of the x and y coordinates of
 points to be plotted.
 '''
 def draw_hull(P, x_col=0, y_col=1, savefig = False, 
-              title='Convexhull', path='../output', filename='convex_hull'):
+              title='Convexhull', path=None, filename='convex_hull',fileformat='png'):
+    if path==None:
+        print('Please, set a path to save the convex hull figure.')
+    
     from scipy.spatial import ConvexHull, convex_hull_plot_2d
-    
-    
     fig = plt.figure(figsize=(4, 4))  
 
     points = np.vstack((P[:,x_col],P[:,y_col])).T
@@ -82,8 +83,8 @@ def draw_hull(P, x_col=0, y_col=1, savefig = False,
         plt.ylim((-0.1,1.0))
     if savefig:
         _plot()
-        plt.savefig(path+'/'+filename+'.png')
-        print('Plot figure saved in:',path+'/'+filename+'.png')
+        plt.savefig(path+'/'+filename+'.'+fileformat)
+        print('Plot figure saved in:',path+'/'+filename+'.'+fileformat)
         plt.close()
     else:
         _plot()
@@ -99,6 +100,6 @@ def props_histo(props):
     for j in range(dim):
         ax = plt.subplot(1,dim,j+1)
         n, bins, patches = plt.hist(props[:,j], bins=50) 
-        plt.title('P'+str(j))
+        plt.title('P'+str(j+1))
     plt.show()
 

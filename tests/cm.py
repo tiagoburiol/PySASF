@@ -1,9 +1,16 @@
 print ('Running cm.py')
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.expanduser("~"), "/home/tiagoburiol/PySASF"))
+print (sys.path)
+
 import pysasf
 from pysasf.basindata import BasinData
 import pysasf.clarkeminella as cm
 from pysasf import plots
 from pysasf import stats
+
 
 datafile = "data/arvorezinha_database.xlsx"
 data = BasinData(datafile)
@@ -24,7 +31,7 @@ data
 Pfea = cm.cm_feasebles(Ps)
 print("The total number of feasible solution is:", len(Pfea))
 
-Pcr = cm.confidence_region(Pfea)
+Pcr = stats.confidence_region(Pfea[:,0:2])
 print("The total number of points in 95% confidence region is:", len(Pcr))
 
 plots.draw_hull(Pcr, path = data.output_folder, 
@@ -33,7 +40,7 @@ plots.draw_hull(Pcr, path = data.output_folder,
 for n in [2,4,8,12,16,20,24]:
     combs,Ps = stats.randon_props_subsamples(data, 'Y', n)
     P_feas = cm.cm_feasebles(Ps)
-    P_cr = stats.confidence_region(P_feas,space_dist='mahalanobis0')
+    P_cr = stats.confidence_region(P_feas,space_dist='mahalanobis')
     name = 'confidence_region_Y'+str(n)
     ax = plots.draw_hull(P_cr, savefig = True, 
                          path = data.output_folder, filename = name)

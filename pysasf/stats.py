@@ -19,8 +19,8 @@ def infos(bd):
     info = pd.DataFrame()
     for key in list(bd.df_dict):
         size = bd.df_dict[key].shape[0]
-        values = np.full(len(bd.cols),size).reshape(1,len(bd.cols))
-        df_info= pd.DataFrame(values, columns=bd.cols)
+        values = np.full(len(bd.tracers),size).reshape(1,len(bd.tracers))
+        df_info= pd.DataFrame(values, columns=bd.tracers)
         df_info = df_info.rename(index={0: key})
         info = pd.concat((info, df_info))
     info.columns.name = 'Sample Sizes'
@@ -69,11 +69,12 @@ def randon_props_subsamples(bd, key, n, only_feasebles=False):
 Calculate de confidence region
 '''    
 def confidence_region(P, p = 95, space_dist='mahalanobis'):
-    Pm = np.mean(P, axis=0)
+    P0 = np.mean(P, axis=0)
+    #print('Pm=',Pm)
     if space_dist=='mahalanobis':
-        dist = distances.mahalanobis_dist(P, Pm)
-    elif space_dist=='mahalanobis0':
-        dist = distances.mahalanobis0_dist(P, Pm)
+        dist = distances.mahalanobis_dist(P, P0)
+    elif space_dist=='mahalanobis2d':
+        dist = distances.mahalanobis2d_dist(P, P0)
     else:
         print('The confidence region space distance',space_dist,'not avaliable')
 

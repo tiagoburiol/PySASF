@@ -49,9 +49,14 @@ A good starting point is to import the `BasinData` object class to store data fr
 
 
 ```python
-from pysasf.basindata import BasinData
+# If you don't have PySASF instaled, you need set the directory:
+import sys
+sys.path.append('/home/tiagoburiol/PySASF')
 ```
 
+```python
+from pysasf.basindata import BasinData
+```
 
 ```python
 arvorezinha = BasinData("../data/arvorezinha_database.xlsx")
@@ -120,6 +125,7 @@ arvorezinha.infos()
     </tr>
   </tbody>
 </table>
+</div>
 
 
 
@@ -127,10 +133,6 @@ arvorezinha.infos()
 ```python
 arvorezinha.means()
 ```
-
-
-
-
 
 <table border="1" class="dataframe">
   <thead>
@@ -188,7 +190,7 @@ arvorezinha.means()
     </tr>
   </tbody>
 </table>
-
+</div>
 
 
 
@@ -196,6 +198,7 @@ arvorezinha.means()
 ```python
 arvorezinha.std()
 ```
+
 
 <table border="1" class="dataframe">
   <thead>
@@ -253,7 +256,7 @@ arvorezinha.std()
     </tr>
   </tbody>
 </table>
-
+</div>
 
 
 
@@ -287,14 +290,12 @@ arvorezinha.set_output_folder('../output')
 arvorezinha.calculate_and_save_all_proportions(load=False)
 ```
 
-    Calculating all proportions...
-    Done! Time processing: 1.9121606349945068
+    Done! Time processing: 1.893726110458374
     Total combinations: 38880 , shape of proportions: (38880, 3)
-    Setting output folder as: ../output
-    Folder to save output files is: '../output'.
-    Saving combinations indexes in: ../output/C9E9L20Y24_combs.txt
-    Saving proportions calculated in: ../output/C9E9L20Y24_props.txt
-    Time for save files: 0.14271330833435059
+    Saving combinations indexes in: ../output/C9E9L20Y24_combstxt
+    Saving proportions calculated in: ../output/C9E9L20Y24_propstxt
+    Feasebles boolean array is sabed in: ../output/C9E9L20Y24_feastxt
+    Time for save files: 0.2960786819458008
 
 
 If you want to store the proportions solutions and the combination indexes, you can choose `load=True`(is the defoult option) when call the rotine above. The proportions solutions and the combination indexes wil be  stored on `BasinData`object class.
@@ -303,9 +304,12 @@ For read the files created and load proportions solutions and the combination in
 
 
 ```python
-combs, Ps = arvorezinha.load_combs_and_props_from_files('../output/C9E9L20Y24_combs.txt',
-                                                        '../output/C9E9L20Y24_props.txt')
+combs, Ps = arvorezinha.load_combs_and_props_from_files(arvorezinha.output_folder+'/C9E9L20Y24_combs.txt',
+                                                        arvorezinha.output_folder+'/C9E9L20Y24_props.txt')
 ```
+
+    Loading combs and props files from: ../output
+
 
 We can verify the loaded array data as follows:
 
@@ -334,7 +338,7 @@ display(combs, Ps)
            [-0.0679, -0.138 ,  1.206 ]])
 
 
-The Clarke and Minella's criterion for considering a feasible solution is that the proportion contributed by each source is less than 1 and greater than 0. We can extract the feaseble solutions usin a function `cm_feasebles` of `clarckeminella` analysis module. This is showed below.
+The Clarke and Minella's criterion for considering a feasible solution is that the proportion P1 and P2 contributed by each source is less than 1 and greater than 0. We can extract the feaseble solutions usin a function `cm_feasebles` of `clarckeminella` analysis module. This is showed below.
 
 
 ```python
@@ -347,11 +351,16 @@ print("The total number of feasible solution is:", len(Pfea))
 
 A confidence region can be calculated in 2 dimentions using the $95 \%$ points closest to the feaseble proportions average using Mahalanobis's distances until the mean of feaseble proportions. A more detailed explanation can be can be obtained in the Clarke and Minella's paper.
 
-The `clarckeminella` module  implement a function for get a confidence region, as can be seen in the example below.
+The `stat` module  implement a function for get a confidence region, as can be seen in the example below.
 
 
 ```python
-Pcr = cm.confidence_region(Pfea)
+from pysasf import stats
+```
+
+
+```python
+Pcr = stats.confidence_region(Pfea[:,0:2], space_dist='mahalanobis')
 print("The total number of points in 95% confidence region is:", len(Pcr))
 ```
 
@@ -363,16 +372,15 @@ Lets draw the confidence region usin the `draw_hull(pts)` function from `plots`m
 
 ```python
 from pysasf import plots
-```
-
-
-```python
 plots.draw_hull(Pcr, title = 'Confidence region')
 ```
 
+    Please, set a path to save the convex hull figure.
+
+
 
     
-![png](images/output_24_0.png)
+![png](images/output_25_1.png)
     
 
 
@@ -401,7 +409,8 @@ P_cr = cm.cm_feasebles(Ps)
 
 
 ```python
-plots.draw_hull(P_cr, savefig = True, title = 'Confidence region 95% whith Y size = 2')
+plots.draw_hull(P_cr, savefig = True, path=arvorezinha.output_folder,
+                title = 'Confidence region 95% whith Y size = 2')
 ```
 
     Plot figure saved in: ../output/convex_hull.png
@@ -414,9 +423,10 @@ A figure will be saved in the output folder. If we want to create several plots 
 for n in [2,4,8,12,16,20,24]:
     combs,Ps = stats.randon_props_subsamples(arvorezinha, 'Y', n)
     P_feas = cm.cm_feasebles(Ps)
-    P_cr = stats.confidence_region(P_feas,space_dist='mahalanobis0')
+    P_cr = stats.confidence_region(P_feas,space_dist='mahalanobis2d')
     name = 'confidence_region_Y'+str(n)
-    ax = plots.draw_hull(P_cr, savefig = True, filename = name)
+    ax = plots.draw_hull(P_cr, savefig = True, 
+                         path = arvorezinha.output_folder,filename = name)
     print('Saving figure named:', name)
     
 ```
@@ -437,12 +447,6 @@ for n in [2,4,8,12,16,20,24]:
     Saving figure named: confidence_region_Y24
 
 
-The figure below shows an example of three images generated in the loop above. The images correspond to the confidence regions for random subsamples with numbers of elements Y with sizes 2, 8, and 20.
-
-![png](images/regions_small.png)
-
-
-
 ### 3. Processing data from reductions and repetitions 
 
 As a result of Clarke and Minella's article presents 
@@ -455,23 +459,220 @@ De full analysis can be repreduced and customized usin the routine `run_repetiti
 
 
 ```python
-tableY = cm.run_repetitions_and_reduction (arvorezinha, 'Y',[2,4,8,12,16,20,24])
+cm.run_repetitions_and_reduction (arvorezinha, 'L',[2,4,8,12,16,20,])
 ```
 
-    Time for all runs: 49.353819608688354
-    Saving in C9E9L20Y24_Y-2-4-8-12-16-20-24.csv
+    Time for all runs: 7.855192184448242
+    Saving in C9E9L20Y24_L-2-4-8-12-16-20.csv
+
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>nSamp</th>
+      <th>CV</th>
+      <th>Mean</th>
+      <th>Std</th>
+      <th>Total</th>
+      <th>Feas</th>
+      <th>MeanP1</th>
+      <th>MeanP2</th>
+      <th>MeanP3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2</td>
+      <td>13.6022</td>
+      <td>0.3463</td>
+      <td>0.0471</td>
+      <td>162</td>
+      <td>859</td>
+      <td>0.371663</td>
+      <td>0.278888</td>
+      <td>0.349450</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>4</td>
+      <td>7.5992</td>
+      <td>0.3814</td>
+      <td>0.0290</td>
+      <td>324</td>
+      <td>1527</td>
+      <td>0.308342</td>
+      <td>0.235412</td>
+      <td>0.456241</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8</td>
+      <td>4.0347</td>
+      <td>0.3928</td>
+      <td>0.0158</td>
+      <td>648</td>
+      <td>2821</td>
+      <td>0.369675</td>
+      <td>0.266656</td>
+      <td>0.363668</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12</td>
+      <td>2.3799</td>
+      <td>0.4001</td>
+      <td>0.0095</td>
+      <td>972</td>
+      <td>4713</td>
+      <td>0.334568</td>
+      <td>0.230881</td>
+      <td>0.434550</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>16</td>
+      <td>1.2213</td>
+      <td>0.4010</td>
+      <td>0.0049</td>
+      <td>1296</td>
+      <td>6539</td>
+      <td>0.337595</td>
+      <td>0.243510</td>
+      <td>0.418894</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>20</td>
+      <td>0.0000</td>
+      <td>0.4024</td>
+      <td>0.0000</td>
+      <td>1620</td>
+      <td>8132</td>
+      <td>0.339917</td>
+      <td>0.245394</td>
+      <td>0.414688</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
 
 
 
 ```python
-tableL = cm.run_repetitions_and_reduction (arvorezinha, 'L',[2,4,8,12,16,20,])
+cm.run_repetitions_and_reduction (arvorezinha, 'Y',[2,4,8,12,16,20,24])
 ```
 
-    Time for all runs: 45.833038091659546
-    Saving in C9E9L20Y24_L-2-4-8-12-16-20.csv
+    Time for all runs: 8.775497436523438
+    Saving in C9E9L20Y24_Y-2-4-8-12-16-20-24.csv
 
 
-Finally the results can be ploted by columns setting the files and the names of columns to be ploted, like the example below.
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>nSamp</th>
+      <th>CV</th>
+      <th>Mean</th>
+      <th>Std</th>
+      <th>Total</th>
+      <th>Feas</th>
+      <th>MeanP1</th>
+      <th>MeanP2</th>
+      <th>MeanP3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2</td>
+      <td>15.1352</td>
+      <td>0.3603</td>
+      <td>0.0545</td>
+      <td>3240</td>
+      <td>473</td>
+      <td>0.353225</td>
+      <td>0.244306</td>
+      <td>0.402471</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>4</td>
+      <td>8.1691</td>
+      <td>0.3817</td>
+      <td>0.0312</td>
+      <td>6480</td>
+      <td>2119</td>
+      <td>0.403431</td>
+      <td>0.203006</td>
+      <td>0.393560</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8</td>
+      <td>3.5203</td>
+      <td>0.3949</td>
+      <td>0.0139</td>
+      <td>12960</td>
+      <td>3584</td>
+      <td>0.351959</td>
+      <td>0.223128</td>
+      <td>0.424913</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12</td>
+      <td>2.2865</td>
+      <td>0.4029</td>
+      <td>0.0092</td>
+      <td>19440</td>
+      <td>3196</td>
+      <td>0.301662</td>
+      <td>0.236558</td>
+      <td>0.461779</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>16</td>
+      <td>1.9065</td>
+      <td>0.4004</td>
+      <td>0.0076</td>
+      <td>25920</td>
+      <td>5557</td>
+      <td>0.361002</td>
+      <td>0.251664</td>
+      <td>0.387333</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>20</td>
+      <td>1.0930</td>
+      <td>0.4022</td>
+      <td>0.0044</td>
+      <td>32400</td>
+      <td>6984</td>
+      <td>0.345001</td>
+      <td>0.251578</td>
+      <td>0.403419</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>24</td>
+      <td>0.0000</td>
+      <td>0.4024</td>
+      <td>0.0000</td>
+      <td>38880</td>
+      <td>8132</td>
+      <td>0.339917</td>
+      <td>0.245394</td>
+      <td>0.414688</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
 
 
 
@@ -487,9 +688,3 @@ plots.plot_cm_outputs(files, 'nSamp', 'CV', savefig=False)
     
 ![png](images/output_39_0.png)
     
-
-
-
-```python
-
-```
