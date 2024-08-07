@@ -10,16 +10,13 @@ Created on jul 2024
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from itertools import product
 from IPython.display import clear_output
 from scipy.spatial import ConvexHull
 import concurrent.futures
 import time
-import sys
 
 
 #PySASF imports
-from pysasf import distances 
 from pysasf import solvers
 from pysasf import stats
 
@@ -49,9 +46,6 @@ def run_repetitions_and_reduction (bd, key,
         df_out_cols.append('MeanP'+str(i+1))
     df_out_data = []
 
-    # get data from df for reductions
-    data = bd.df_dict[key].values.astype(float)
-
 
     # apenas para calcular o numero total de Ps (Melhorar isso)
     prod =1
@@ -70,7 +64,6 @@ def run_repetitions_and_reduction (bd, key,
     for n in reductions:
         #Total=prod*n
         points_set = []
-        areas_set = []
         areas = []
         filename = filename+'-'+str(n)
 
@@ -142,6 +135,15 @@ Esta função processa o cálculo das porcentagens usando as médias
 Faz as contas usando reps repetições tomando aletoriamente um conjunto
 de subamostras com tamanhos definidos por n_list. Tem opção de plotar. 
 '''
+
+def random_subsamples(bd,nlist):
+    df_dict = bd.df_dict
+    ss_dict = {}
+    for i, key in enumerate(df_dict.keys()):
+        data = df_dict[key].values.astype(float)
+        ss_dict[key]=data[np.random.choice(len(data), nlist[i], replace=False)]
+    return ss_dict
+
 def get_props_from_subsamples_means(bd,reps,n_list, plot=True):
     df_dict = bd.df_dict
     Y = bd.df_dict['Y'].values.astype(float)

@@ -4,6 +4,7 @@
 Created on jul 2024
 
 @author: tiagoburiol
+@coworker: buligonl; josue@sehnem.com
 """
 
 import pandas as pd

@@ -7,14 +7,7 @@ Created on jul 2024
 @coworker: buligonl; josue@sehnem.com
 """
 
-import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
-from random import randrange
-from scipy.linalg import solve
-import seaborn as sns
-from matplotlib.legend import Legend
-import h5py
 from scipy.spatial import distance
 
 

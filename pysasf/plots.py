@@ -10,18 +10,12 @@ Created on jul 2024
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from random import randrange
-from scipy.linalg import solve
-import seaborn as sns
-from matplotlib.legend import Legend
-import h5py
-from scipy.spatial import distance
 
         
 def plot_cm_outputs(list_of_files, x_key, y_key, 
                     savefig = False, path='../output'):
     filename = 'plot_'+str(x_key)+'_'+str(y_key)
-    fig = plt.figure(figsize=(8, 4))  
+    plt.figure(figsize=(8, 4))  
 
     def _plot():
         for file in list_of_files:
@@ -58,8 +52,8 @@ def draw_hull(P, x_col=0, y_col=1, savefig = False,
     if path==None:
         print('Please, set a path to save the convex hull figure.')
     
-    from scipy.spatial import ConvexHull, convex_hull_plot_2d
-    fig = plt.figure(figsize=(4, 4))  
+    from scipy.spatial import ConvexHull
+    plt.figure(figsize=(4, 4))  
 
     points = np.vstack((P[:,x_col],P[:,y_col])).T
     #print(points.shape)
@@ -95,10 +89,10 @@ def draw_hull(P, x_col=0, y_col=1, savefig = False,
 def props_histo(props):
     n = props.shape[0]
     dim = props.shape[1]
-    fig = plt.figure(figsize=(5*dim,3))
+    plt.figure(figsize=(5*dim,3))
     
     for j in range(dim):
-        ax = plt.subplot(1,dim,j+1)
+        plt.subplot(1,dim,j+1)
         n, bins, patches = plt.hist(props[:,j], bins=50) 
         plt.title('P'+str(j+1))
     plt.show()

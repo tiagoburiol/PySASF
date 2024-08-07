@@ -6,24 +6,17 @@ Created on jul 2024
 @author: tiagoburiol
 @coworker: buligonl; josue@sehnem.com
 """
-
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
-from random import randrange
-from scipy.linalg import solve
-import seaborn as sns
-from matplotlib.legend import Legend
 import time
-#import logging
-#logging.basicConfig(level=logging.INFO)
 import os
 
-from pysasf.readers import read_datafile
+from IPython.display import clear_output
+
+# PySASF imports
+from pysasf import readers
 from pysasf import stats
 from pysasf import solvers
-from pysasf import clarkeminella as cm
-from IPython.display import clear_output
 
 
 class BasinData:
@@ -72,7 +65,7 @@ class BasinData:
         
     """
     def __init__(self, filename):
-        df = read_datafile(filename)
+        df = readers.read_datafile(filename)
         
         self.df_dict = {}
         self.tracers = list(df.columns[1:])
@@ -181,7 +174,6 @@ class BasinData:
     
    ################################################################################
     def calcule_all_props(self, solve_opt='ols'):
-        from concurrent.futures import ThreadPoolExecutor, as_completed
         from itertools import product
         df_dict = self.df_dict
         S_inv = self.S_inv
@@ -197,7 +189,6 @@ class BasinData:
     
         # Gera todas as combinações possíveis
         combs = list(product(*idx))
-        total = len(combs)
 
         #cria um array vazio para todos os Ps
         Ps = np.empty((len(combs),len(keys)-1)).astype(float)
@@ -229,7 +220,7 @@ class BasinData:
             if solve_opt == 'opt':
                 P = solvers.solve_minimize(y,X)
             Ps[k] = P
-            fim = time.time()
+
         clear_output(wait=True)
         return combs, Ps
     ###############################################################################
