@@ -23,7 +23,11 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[dependencies]
 dependencies = ["numpy", "pandas", "scipy", "matplotlib"]
+
+[optional-dependencies]
+optional-dependencies = ["seaborn","pyarrow"]
 
 [project.urls]
 Homepage = "https://github.com/tiagoburiol/PySASF"
