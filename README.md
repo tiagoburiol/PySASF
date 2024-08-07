@@ -1,5 +1,7 @@
 ![png](https://github.com/tiagoburiol/PySASF/blob/main/images/logo_name_small.png?raw=true)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13260171.svg)](https://doi.org/10.5281/zenodo.13260171)
+
 # PySASF
 **A Python package for Source Apportionment with Sediment Fingerprinting.**
 
