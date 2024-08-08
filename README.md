@@ -1,6 +1,7 @@
 ![png](https://github.com/tiagoburiol/PySASF/blob/main/images/logo_name_small.png?raw=true)
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13260171.svg)](https://doi.org/10.5281/zenodo.13260171)
+[![PyPI version](https://badge.fury.io/py/PySASF.svg)](https://pypi.org/project/PySASF/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13260171.svg)](https://doi.org/10.5281/zenodo.13260171) 
+
 
 
 # PySASF
@@ -14,18 +15,22 @@ PySASF has been used and tested first by the Interdisciplinary Research Group on
 
 ## Install
 
-Download the package from [here](https://github.com/tiagoburiol/PySASF/blob/main/dist/pysasf-0.0.5.tar.gz) 
+Install from [PyPI]([https://pypi.org/project/PySASF/) by typing the following command line in a terminal
+
+    $ pip install PySASF
+
+or download the package from [GitHub](https://github.com/tiagoburiol/PySASF/blob/main/dist/pysasf-0.0.5.tar.gz) 
 and install it using the following command line in the directory where the file was downloaded.
 
-```python
-$ pip3  install pysasf-0.0.5.tar.gz
-```
+
+    $ pip3  install pysasf-0.0.5.tar.gz
+
 
 You can download a Python script for testing from [here](https://github.com/tiagoburiol/PySASF/blob/main/tests/cm.py). You need to download the data () file from  [here](https://github.com/tiagoburiol/PySASF/blob/main/data/arvorezinha_database.xlsx) and store it in a folder named `data` in the same directory as the script. Then you can run it using the terminal command:
 
-```python
-$ python3 cm.py
-```
+
+    $ python3 cm.py
+
 
 This script run a command terminal version of the example of usage 
  [quick start](https://github.com/tiagoburiol/PySASF/blob/main/notebooks/quick_start.ipynb) notebook.
@@ -383,7 +388,7 @@ plots.draw_hull(Pcr, title = 'Confidence region')
 
 
     
-![png](images/output_25_1.png)
+![png](https://github.com/tiagoburiol/PySASF/blob/main/images/output_25_1.png?raw=true)
     
 
 
@@ -448,6 +453,11 @@ for n in [2,4,8,12,16,20,24]:
     Saving figure named: confidence_region_Y20
     Plot figure saved in: ../output/confidence_region_Y24.png
     Saving figure named: confidence_region_Y24
+
+
+The figure below shows an example of three images generated in the loop above. The images correspond to the confidence regions for random subsamples with numbers of elements Y with sizes 2, 8, and 20.
+
+![png](https://github.com/tiagoburiol/PySASF/blob/main/images/regions_small.png?raw=true)
 
 
 ### 3. Processing data from reductions and repetitions 
@@ -689,5 +699,5 @@ plots.plot_cm_outputs(files, 'nSamp', 'CV', savefig=False)
 
 
     
-![png](images/output_39_0.png)
+![png](https://github.com/tiagoburiol/PySASF/blob/main/images/output_39_0.png?raw=true)
     
