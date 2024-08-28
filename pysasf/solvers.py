@@ -8,44 +8,56 @@ Created on jul 2024
 """
 
 import numpy as np
+import statsmodels.api as sm
 
 '''
 To solve the overdetermined linear system of equations 
 by least squares method
 '''  
 def solve_gls_4x4(y,X,S_inv):
-    B = S_inv.dot(X)
-    C = S_inv.dot(y)
-    AtA = np.dot(X.T,B)
-    yty = np.dot(X.T,C)
-    AtA = np.vstack([AtA, np.ones(3)])
-    AtA = np.vstack([AtA.T, np.ones(4)]).T
+    #print (X.shape) #7x3
+    #print(S_inv.shape) #7x7
+    B = S_inv.dot(X)#7x3
+    C = S_inv.dot(y)#7x1
+    
+    AtA = np.dot(X.T,B)#3x3
+    yty = np.dot(X.T,C)#3x1
+    AtA = np.hstack((AtA, np.ones((X.shape[1],1))))
+    AtA = np.vstack((AtA, np.ones((1,X.shape[1]+1))))
     AtA[-1,-1] = 0
     Aty = np.append(yty,[1])
-    P = np.dot(np.linalg.inv(AtA),Aty)[0:3]
+    P = np.dot(np.linalg.inv(AtA),Aty)[0:X.shape[1]]
     return (P)
 
-def solve_ols_4x4(y,X):
-    #print(X.shape)
-    #print(y.shape)
-    X = np.array(X.T/y)
-    y = y/y
-    
-    A = np.vstack([X.T, np.ones(len(X))])
-    
-    AtA = np.dot(A.T,A)
-    AtA = np.vstack([AtA, np.ones(len(X))])
-    AtA = np.vstack([AtA.T, np.ones(len(X)+1)]).T
-    AtA[-1,-1] = 0
-    
-    y = np.append(y,[1])
-    y = y[:, np.newaxis]
-        
-    Aty = np.dot(A.T,y)
-    Aty = np.append(Aty,[1])
+def solve_ols_cm(y,X):
+    X = np.divide(X,y.reshape(len(X),1))
+    A = X.T@X
+    A = np.hstack((A, np.ones((len(A),1))))
+    A = np.vstack((A, np.ones((1,len(A)+1))))
+    A[-1,-1]=0
+    Z = np.dot(X.T,np.ones(len(X)))
+    Z = np.append(Z,[1])
+    #print(A)
+    #print(Z)
+    P = np.linalg.inv(A)@Z
+    return (P[0:-1])
 
-    P = np.dot(np.linalg.inv(AtA),Aty)
-    return (P[0:len(X)])
+## needs statmodel module
+## same results of solve_ols
+#def solve_ols_sm(y,X):
+#    X = np.divide(X,y.reshape(len(X),1))
+#    X = np.vstack([X, np.ones((1,X.shape[1]))])
+#    y = np.ones(len(X)) 
+#    ols_model = sm.OLS(y, X).fit()
+#    return (ols_model.params)
+
+
+def solve_ols(y,X):
+    X = np.divide(X,y.reshape(len(X),1))
+    y = np.ones(len(X)) 
+    P = np.linalg.inv(X.T@X)@(X.T@y)
+    return (P)
+
 
 def solve_minimize(y,A):
     from scipy.optimize import minimize
@@ -97,19 +109,6 @@ def solve_minimize2(y,A):
     P = S.x
     return(P)
 
-def _buildSourceContribMatrix(a):
-        g = len(a) # número de fontes
-        A = np.ones((g+1,g+1)) 
-        A[:g,:g] = np.dot(a,a.T)
-        A[g, g]=0
-        return A     
 
-def solve_ols_4x4_mod(X, y):
-        if normalize == True:
-             d=d/y; e=e/y; l=l/y; y=y/y
-        a = np.array([d/y,e/y,l/y])
-        A = self._buildSourceContribMatrix(a)
-        Z = np.append(np.dot(a, y/y), 1)
-        P = np.dot(np.linalg.inv(A),Z)
-        #P = solve(A, Z)
-        return (P)
+
+

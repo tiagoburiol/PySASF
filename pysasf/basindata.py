@@ -73,6 +73,7 @@ class BasinData:
         self.combs = np.array([])
         self.props = np.array([])
         self.feas = None
+        self.S_inv = None
         self.solver_option = 'ols'
         self.output_folder= os.path.join(os.path.expanduser("~"), "PySASF-output")
         self.cm_df = None
@@ -109,6 +110,9 @@ class BasinData:
         
     def set_solver_option(self,solver_option):
         self.solver_option = solver_option
+        
+    def set_feasebles(self,Ps):
+        self.feas = [np.all(P>0) and np.sum(P)<=1 for P in Ps]
         
 
     # SET OUTPUT SOLVER ##############################################################
@@ -161,7 +165,7 @@ class BasinData:
             array_shape = (int(len(Ps)/3),3)
             Ps = Ps.reshape(array_shape)
             self.props = Ps
-        self.feas = [np.all(P>0) for P in Ps]   
+        self.set_feasebles(Ps) 
         return self.combs, self.props
 
     def _save_feasebles(self, feas, output_folder,filename,format):
@@ -213,14 +217,16 @@ class BasinData:
             y = df_dict['Y'].values[comb[-1]].astype(float)
             X = np.array(X).T
             #SOLVE
+            if solve_opt == 'ols0':
+                P = solvers.solve_ols(y,X)
             if solve_opt == 'gls':
                 P = solvers.solve_gls_4x4(y,X,S_inv)
             if solve_opt == 'ols':
-                P = solvers.solve_ols_4x4(y,X)
+                P = solvers.solve_ols_cm(y,X)
             if solve_opt == 'opt':
                 P = solvers.solve_minimize(y,X)
             Ps[k] = P
-
+        self.set_feasebles(Ps)
         clear_output(wait=True)
         return combs, Ps
     ###############################################################################
@@ -230,7 +236,11 @@ class BasinData:
     '''
     calculate_and_save_all_proportions
     '''
-    def calculate_and_save_all_proportions(self, format='txt', load=True):
+    def calculate_and_save_all_proportions(self, format='txt', key='Y', load=True):
+        if key!='Y':
+            data=self.df_dict[key].values.astype(float)
+            self.S_inv = np.linalg.inv(np.cov(data.T))
+        
         inicio = time.time()
         # Calculating...
         combs, Ps = self.calcule_all_props(solve_opt = self.solver_option)
@@ -259,7 +269,7 @@ class BasinData:
               self.output_folder+'/'+self.props_filename+format)
         self._save_array_in_file(combs, self.output_folder, self.combs_filename, format,'int')
         self._save_array_in_file(Ps, self.output_folder, self.props_filename, format,'float32')
-        self.feas = [np.all(P>0) for P in Ps]
+        #self.feas = self.set_feasebles(Ps)
         self._save_feasebles(self.feas,self.output_folder,self.feas_filename, format)
         fim = time.time()
         print ("Time for save files:",fim-inicio)

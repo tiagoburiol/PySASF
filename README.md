@@ -7,13 +7,18 @@
 # PySASF
 **A Python package for Source Apportionment with Sediment Fingerprinting.**
 
-PySASF was developed to provide computational resources for research aimed at identifying the contributions of various sources to fluvial sediments. More specifically, PySASF implements methods for calculating the proportions contributed by each source from a dataset and its random subsamples, as well as analyzing solution variabilities. Additionally, it includes routines for visualizing confidence regions and other plots from the complete dataset and reduced samples.
+PySASF package version running on Python Software has been developed for reproducing the results published in [Clarke and Minella
+(2016)](https://onlinelibrary.wiley.com/doi/abs/10.1002/hyp.10866). This initiative originated from a collaboration between the Department of Soil and the Department of Mathematics at Federal University of Santa Maria ([UFSM](https://www.ufsm.br/)).
 
-This initiative originated from a collaboration between the Department of Soil Science and the Department of Mathematics at the Federal University of Santa Maria ([UFSM](https://www.ufsm.br/)), with participation from other educational and research institutions. The initial motivation was to reproduce the results published in [Clarke and Minella (2016)](https://onlinelibrary.wiley.com/doi/abs/10.1002/hyp.10866) and to create a package of Python routines to facilitate the replication of the experiment with other data sources.
+The first version of PySASF was tested mainly on the data set available by the Interdisciplinary Research Group on Erosion and Surface Hydrology -
+[GIPEHS](https://www.ufsm.br/laboratorios/lapehs). However, it can be used in different data sets. A revised description emphasizing a step-by-step mathematical formulation used in the research, and an updated algorithm with the instruction sequence that operationalizes the alternative mixture
+model can be found in [COAM](https://link.springer.com/journal/40314).
 
-PySASF has been used and tested first by the Interdisciplinary Research Group on Erosion and Surface Hydrology ([GIPEHS](https://www.instagram.com/gipehs.ufsm/) at UFSM. New analysis models, resulting from research and development efforts, will be incorporated in the future, based on this academic collaboration.
+The PySASF package is available in this [Github]( https://github.com/tiagoburiol/PySASF) repository
+and archived on [PyPi](https://pypi.org/project/PySASF/). This package is free and new versions can be prepared to increase access to new methods related to sediment tracing.
 
-## Install
+
+## Installation
 
 Install from [PyPI]([https://pypi.org/project/PySASF/) by typing the following command line in a terminal
 
@@ -51,7 +56,10 @@ Replace `your_path_to` with the path to the directory where PySASF-main was extr
 You will needs [NumPy](https://numpy.org/), [Scipy](https://scipy.org/), [MatplotLib](https://matplotlib.org/) and [Pandas](https://pandas.pydata.org/)  instaled. All dependencies can be satisfied by an [Anaconda](https://anaconda.org/) installation.
 
 ## Example of usage
-### 1. Loading the data
+
+(*) *The methodology used in the selection of potential sources and discriminatory analysis, which defines the best set of tracers, are described in [Minella et al. (2008)]( https://doi.org/10.1016/j.jhydrol.2007.10.026)*
+
+### 1. Uploading data
 
 A good starting point is to import the `BasinData` object class to store data from a basin's sediment sources. An instance of BasinData should be created, and the data should be loaded from a file. It is common to store data files in the 'data' directory one level above. The import and creation of an instance of `BasinData` are shown below.
 
@@ -268,7 +276,7 @@ arvorezinha.std()
 
 
 
-### 2. Using the clarkeminela module
+### 2. The clarkeminella module (cm.py)
 
 We can easily reproduce the Clarke and Minella (2016) method for measuring the increase in uncertainty when sampling sediment fingerprinting. A full explanation of this method is available in the paper 'Evaluating sampling efficiency when estimating sediment source contributions to suspended sediment in rivers by fingerprinting.' DOI: 10.1002/hyp.10866. The steps required to achieve the same results described in the paper can be executed with a few function calls, as shown below.
 
