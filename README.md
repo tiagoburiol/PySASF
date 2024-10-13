@@ -1,4 +1,4 @@
-![png](https://github.com/tiagoburiol/PySASF/blob/main/images/logo_name_small.png?raw=true)
+![png](https://github.com/tiagoburiol/PySASF/blob/main/images/Logo_principal_horizontal_small.png?raw=true)
 
 [![PyPI version](https://badge.fury.io/py/PySASF.svg)](https://pypi.org/project/PySASF/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13260171.svg)](https://doi.org/10.5281/zenodo.13260171) 
 
