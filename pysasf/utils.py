@@ -8,10 +8,15 @@ Created on jul 2024
 """
 
 import pandas as pd
+import numpy as np
+
+
 
 
 #https://learner-cares.medium.com/handy-python-pandas-for-data-normalization-and-scaling-9658846de8fc
-
+'''
+não esá sendo usado para nada
+'''
 def minmax_scale(bd):
     from sklearn.preprocessing import MinMaxScaler
     import copy

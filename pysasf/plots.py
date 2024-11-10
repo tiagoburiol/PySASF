@@ -13,10 +13,14 @@ import numpy as np
 
         
 def plot_cm_outputs(list_of_files, x_key, y_key, 
-                    savefig = False, path='../output'):
-    filename = 'plot_'+str(x_key)+'_'+str(y_key)
+                    savefig = False, path='../output', fname = None):
+    if fname==None:
+        filename = 'plot_'+str(x_key)+'_'+str(y_key)
+    else:
+        filename = fname
+    
     plt.figure(figsize=(8, 4))  
-
+    plt.grid()
     def _plot():
         for file in list_of_files:
             df = pd.read_csv(file)
@@ -27,17 +31,17 @@ def plot_cm_outputs(list_of_files, x_key, y_key,
             plt.xlabel('Sample size')
             plt.ylabel('CV%, 50 runs: 95% Confidence Region of P1,P2')
             plt.grid()
-        
+                  
     if savefig:
         _plot()
         plt.grid()
         plt.savefig(path+'/'+filename+'.png')
-        print('Plot figure saved in:',path+'/'+filename+'.png')
         plt.close()
+        print('Plot figure saved in:',path+'/'+filename+'.png')
     else:
         _plot()
-        plt.grid()
-        plt.show()
+        #plt.grid()
+        #plt.show()
     return None
     
 '''
@@ -96,4 +100,26 @@ def props_histo(props):
         n, bins, patches = plt.hist(props[:,j], bins=50) 
         plt.title('P'+str(j+1))
     plt.show()
+
+def props_histo(bd):
+    
+    bd.df_dict
+    n = props.shape[0]
+    dim = props.shape[1]
+    plt.figure(figsize=(5*dim,3))
+    
+    for j in range(dim):
+        plt.subplot(1,dim,j+1)
+        n, bins, patches = plt.hist(props[:,j], bins=50) 
+        plt.title('P'+str(j+1))
+    plt.show()
+
+
+def data_histo(bd):
+    for s in bd.sources:
+        #print(s)
+        df = bd.df_dict[s]
+        df.hist()
+
+
 

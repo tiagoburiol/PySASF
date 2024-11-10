@@ -48,20 +48,29 @@ def std(bd):
     return(std.astype(float).round(2))
 
 
-def randon_props_subsamples(bd, key, n, only_feasebles=False):
+def randon_props_subsamples(bd, key, n, only_feasebles=False, target=None):
     Ps = bd.props
     combs = bd.combs
     key_idx = list(bd.df_dict.keys()).index(key)
     size = len(bd.df_dict[key])
     rand = np.random.choice(np.arange(size), n, replace=False)
+
+    # if 'bytarget' pick only the target selected
+    targets_idx = list(bd.df_dict.keys()).index('Y')
+    if target!=None:
+        Ps = bd.props[np.where(np.isin(combs[:,targets_idx],target))]
+        combs = bd.combs[np.where(np.isin(combs[:,targets_idx],target))]
+        feas = bd.feas[np.where(np.isin(combs[:,targets_idx],target))]
+    else:
+        feas = bd.feas
     
     if only_feasebles == False:
         selected_combs = combs[np.where(np.isin(combs[:,key_idx],rand))]
         selected_Ps = Ps[np.where(np.isin(combs[:,key_idx],rand))]
     else:
         #print('randon_props_subsamples->only_feasebles')
-        selected_combs = combs[np.where(np.isin(combs[:,key_idx],rand)  & bd.feas)]
-        selected_Ps = Ps[np.where(np.isin(combs[:,key_idx],rand) & bd.feas)]
+        selected_combs = combs[np.where(np.isin(combs[:,key_idx],rand) & feas)]
+        selected_Ps = Ps[np.where(np.isin(combs[:,key_idx],rand) & feas)]
     return selected_combs, selected_Ps
 
 '''
@@ -86,4 +95,21 @@ def confidence_region(P, p = 95, space_dist='mahalanobis'):
     #print ("Os 95% mais próximos:", Psorted[:,:end_idx])
     return (Psorted[:end_idx,:])
 
+'''
+Get a randon subsample set
+n_list is a list containing a number of elements of each source
+'''
+def random_subsamples(bd,nlist):
+    df_dict = bd.df_dict
+    ss_dict = {}
+    for i, key in enumerate(df_dict.keys()):
+        data = df_dict[key].values.astype(float)
+        ss_dict[key]=data[np.random.choice(len(data), nlist[i], replace=False)]
+    return ss_dict
 
+'''
+Get a randon props subset
+'''
+def random_props_subset(arr,n):
+    substet = arr[np.random.choice(len(arr), n, replace=False)]
+    return substet

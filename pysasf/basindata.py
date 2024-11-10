@@ -26,7 +26,7 @@ class BasinData:
     Attributes:
     ----------
     df_dict: str
-        Dictionary of Pandas dataframes for sources and suspended sediments.
+        Dictionary of Pandas dataframes for store sources and suspended sediments data.
     tracers: str list
         List of tracer names.   
     sources: str list
@@ -75,7 +75,7 @@ class BasinData:
         self.feas = None
         self.S_inv = None
         self.solver_option = 'ols'
-        self.output_folder= os.path.join(os.path.expanduser("~"), "PySASF-output")
+        self.output_folder= os.path.join(os.path.expanduser("~"), "PySASF/output")
         self.cm_df = None
         self.cm_all_Pfea = None
 
@@ -86,11 +86,11 @@ class BasinData:
         for name in names:
             data = df[df[df.columns[0]]==name].values[:,1:]
             if name[0:6]!='Target':
-                df_temp = pd.DataFrame(data, columns=self.tracers)
+                df_temp = pd.DataFrame(data.astype(float), columns=self.tracers)
                 self.df_dict[name]=df_temp
                 self.sources.append(name)
             else:
-                df_temp = pd.DataFrame(data,columns=self.tracers)
+                df_temp = pd.DataFrame(data.astype(float),columns=self.tracers)
                 df_temp2 = pd.concat((df_temp2, df_temp))
         self.df_dict['Y']=df_temp2.reset_index(drop=True)
 
@@ -110,10 +110,29 @@ class BasinData:
         
     def set_solver_option(self,solver_option):
         self.solver_option = solver_option
+
+    def get_feasebles(self,Ps, option=1):
+        if option==1:
+            feas = Ps[[np.all(P>0) for P in Ps]]
+        if option==2:
+            feas = Ps[[np.all(P>0) and np.sum(P)<1 for P in Ps]]
+        if option==3:
+            feas = Ps[[np.all(P>0) and np.sum(P)<=1 for P in Ps]]
+        return feas
+
+    '''
+    Identify feasebles ans store in the 'self.feas' boolean array  
+    '''
+    def set_feasebles(self, Ps, option=1):
+        if option==1:
+            feas_id = [np.all(P>0) for P in Ps]
+        if option==2:
+            feas_id =[np.all(P>0) and np.sum(P)<1 for P in Ps]
+        if option==3:
+            feas_id = [np.all(P>0) and np.sum(P)<=1 for P in Ps]
+        self.feas = feas_id
         
-    def set_feasebles(self,Ps):
-        self.feas = [np.all(P>0) and np.sum(P)<=1 for P in Ps]
-        
+
 
     # SET OUTPUT SOLVER ##############################################################
     def set_output_folder(self, path):
@@ -147,7 +166,7 @@ class BasinData:
             pq.write_table(t, self.output_folder+'/'+filename+'.'+fileformat,
                            compression='gzip')
             
-    # LOAD FILE ########################################################################
+    # LOAD FILES ########################################################################
     def load_combs_and_props_from_files(self,fc,fp):
         print('Loading combs and props files from:', self.output_folder)
         if fc[-3:]=='txt' and fp[-3:]=='txt':
@@ -155,6 +174,7 @@ class BasinData:
             Ps = np.loadtxt(fp)
             self.combs = combs
             self.props = Ps
+            self.filename = str(fc[len(self.output_folder):-10])
         if fc[-4:]=='gzip' and fp[-4:]=='gzip':
             import pyarrow.parquet as pq
             combs = np.array(pq.read_table(fc))
@@ -165,13 +185,27 @@ class BasinData:
             array_shape = (int(len(Ps)/3),3)
             Ps = Ps.reshape(array_shape)
             self.props = Ps
+            self.filename = str(fc[len(self.output_folder):-11])
         self.set_feasebles(Ps) 
         return self.combs, self.props
+
+    def load_feasebles_from_file(self,ff):
+        print('Loading feasebles proportion indexes from:', self.output_folder)
+        if ff[-3:]=='txt':
+            feas = np.loadtxt(ff).astype(int)
+            self.feas = feas.ravel().astype(bool)
+        if ff[-4:]=='gzip':
+            import pyarrow.parquet as pq
+            feas = np.array(pq.read_table(ff))
+            #array_shape = (int(len(feas)))
+            #feas = feas.reshape(array_shape)
+            self.feas = feas.ravel().astype(bool)
+        return self.feas
 
     def _save_feasebles(self, feas, output_folder,filename,format):
         #booleans = [np.all(P>0) for P in Ps]
         self._save_array_in_file(self.feas,output_folder,filename,format,'int')
-        print ('Feasebles boolean array is sabed in:',output_folder+'/'+filename+format)
+        print ('Feasebles boolean array is saded in:',output_folder+'/'+filename+'.'+format)
         #self.feas=booleans
         return None
 
@@ -264,9 +298,9 @@ class BasinData:
         self.props_filename = filename+'_props'
         self.feas_filename = filename+'_feas'
         print('Saving combinations indexes in:',
-              self.output_folder+'/'+self.combs_filename+format)
+              self.output_folder+'/'+self.combs_filename+'.'+format)
         print('Saving proportions calculated in:',
-              self.output_folder+'/'+self.props_filename+format)
+              self.output_folder+'/'+self.props_filename+'.'+format)
         self._save_array_in_file(combs, self.output_folder, self.combs_filename, format,'int')
         self._save_array_in_file(Ps, self.output_folder, self.props_filename, format,'float32')
         #self.feas = self.set_feasebles(Ps)
