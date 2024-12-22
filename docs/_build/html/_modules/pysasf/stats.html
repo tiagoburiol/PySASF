@@ -61,6 +61,36 @@
 <div class="viewcode-block" id="infos">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.stats.infos">[docs]</a>
 <span class="k">def</span> <span class="nf">infos</span><span class="p">(</span><span class="n">bd</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a DataFrame containing the sample sizes for each key in the input object.</span>
+
+<span class="sd">    This function iterates through the dictionary of DataFrames contained in the</span>
+<span class="sd">    `bd` object and creates a summary DataFrame that lists the number of samples</span>
+<span class="sd">    (rows) for each DataFrame associated with the keys in `bd.df_dict`. The resulting</span>
+<span class="sd">    DataFrame has the keys as index and the sample sizes as values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bd : object</span>
+<span class="sd">        An object that contains a dictionary of DataFrames in the attribute `df_dict`</span>
+<span class="sd">        and a list of tracer names in the attribute `tracers`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.DataFrame</span>
+<span class="sd">        A DataFrame where the index represents the keys from `bd.df_dict` and the</span>
+<span class="sd">        values represent the sample sizes (number of rows) for each corresponding DataFrame.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AttributeError</span>
+<span class="sd">        If `bd` does not have the attributes `df_dict` or `tracers`.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    #TODO: Need to provide more comments for these!</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">info</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">bd</span><span class="o">.</span><span class="n">df_dict</span><span class="p">):</span>
         <span class="n">size</span> <span class="o">=</span> <span class="n">bd</span><span class="o">.</span><span class="n">df_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -76,6 +106,25 @@
 <div class="viewcode-block" id="means">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.stats.means">[docs]</a>
 <span class="k">def</span> <span class="nf">means</span><span class="p">(</span><span class="n">bd</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculates the mean values for each column in the dataframes stored in the bd.df_dict dictionary</span>
+<span class="sd">    (average) value of each element in each source.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    bd : object</span>
+<span class="sd">        An instance of a BasinData class Basin. Contains a dictionary of dataframes, bd.df_dict.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    means : pandas.DataFrame</span>
+<span class="sd">        A dataframe containing the mean values for each column in the dataframes stored in bd.df_dict</span>
+<span class="sd">        (average value of each element in each source -- average of the element value of all samples from the same source).</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">means</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">bd</span><span class="o">.</span><span class="n">df_dict</span><span class="p">):</span>
         <span class="n">df_mean</span> <span class="o">=</span> <span class="n">bd</span><span class="o">.</span><span class="n">df_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
@@ -90,6 +139,23 @@
 <div class="viewcode-block" id="std">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.stats.std">[docs]</a>
 <span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="n">bd</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculates the standard deviation values for each column in the dataframes stored in the bd.df_dict dictionary.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    bd : object</span>
+<span class="sd">        An instance of a BasinData class Basin. Contains a dictionary of dataframes, bd.df_dict.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    std : pandas.DataFrame</span>
+<span class="sd">        A dataframe containing the standard deviation values for each column in the dataframes stored in bd.df_dict.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">std</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">bd</span><span class="o">.</span><span class="n">df_dict</span><span class="p">):</span>
         <span class="n">df_std</span> <span class="o">=</span> <span class="n">bd</span><span class="o">.</span><span class="n">df_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
@@ -104,6 +170,31 @@
 <div class="viewcode-block" id="randon_props_subsamples">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.stats.randon_props_subsamples">[docs]</a>
 <span class="k">def</span> <span class="nf">randon_props_subsamples</span><span class="p">(</span><span class="n">bd</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">only_feasebles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Selects a random subsample of n rows from the dataframe stored in bd.df_dict[key], and returns the corresponding rows from the bd.combs and bd.props arrays.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    bd : object</span>
+<span class="sd">        An instance of a class that contains a dictionary of dataframes (bd.df_dict), a combinations array (bd.combs), and a properties array (bd.props).</span>
+<span class="sd">    key : str</span>
+<span class="sd">        The key corresponding to the dataframe in bd.df_dict from which the subsample will be selected.</span>
+<span class="sd">    n : int</span>
+<span class="sd">        The number of rows to select in the subsample.</span>
+<span class="sd">    only_feasibles : bool, optional</span>
+<span class="sd">        If True, only selects rows that are feasible (i.e., where bd.feas is True).Defaults to False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    selected_combs : numpy.ndarray</span>
+<span class="sd">        A 2D numpy array containing the rows from bd.combs that correspond to the selected subsample.</span>
+<span class="sd">    selected_Ps : numpy.ndarray</span>
+<span class="sd">        A 1D numpy array containing the rows from bd.props that correspond to the selected subsample.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">Ps</span> <span class="o">=</span> <span class="n">bd</span><span class="o">.</span><span class="n">props</span>
     <span class="n">combs</span> <span class="o">=</span> <span class="n">bd</span><span class="o">.</span><span class="n">combs</span>
     <span class="n">key_idx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">bd</span><span class="o">.</span><span class="n">df_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
@@ -130,11 +221,32 @@
 
 
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">Calculate de confidence region</span>
+<span class="sd">Calculate the confidence region</span>
 <span class="sd">&#39;&#39;&#39;</span>    
 <div class="viewcode-block" id="confidence_region">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.stats.confidence_region">[docs]</a>
 <span class="k">def</span> <span class="nf">confidence_region</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="mi">95</span><span class="p">,</span> <span class="n">space_dist</span><span class="o">=</span><span class="s1">&#39;mahalanobis&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculates the confidence region for the given set of points P, based on the specified confidence level</span>
+<span class="sd">    (default is 95%) and distance metric (default is &#39;mahalanobis&#39;).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    P : numpy.ndarray</span>
+<span class="sd">        A 2D numpy array containing the set of points for which the confidence region is to be calculated.</span>
+<span class="sd">    p : {int, optional}</span>
+<span class="sd">        The confidence level, expressed as a percentage. Defaults to 95.</span>
+<span class="sd">    space_dist : str, optional</span>
+<span class="sd">        The distance metric to use for calculating the confidence region. Can be either &#39;mahalanobis&#39; or &#39;mahalanobis2d&#39;. Defaults to &#39;mahalanobis&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    Psorted_cropped : numpy.ndarray: A numpy array containing the points that fall within the specified confidence region, within the mahalanobis distance metric.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">P0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="c1">#print(&#39;Pm=&#39;,Pm)</span>
     <span class="k">if</span> <span class="n">space_dist</span><span class="o">==</span><span class="s1">&#39;mahalanobis&#39;</span><span class="p">:</span>
@@ -154,13 +266,14 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">Psorted</span><span class="p">[:</span><span class="n">end_idx</span><span class="p">,:])</span></div>
 
 
-<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">Get a randon subsample set</span>
-<span class="sd">n_list is a list containing a number of elements of each source</span>
-<span class="sd">&#39;&#39;&#39;</span>
+
 <div class="viewcode-block" id="random_subsamples">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.stats.random_subsamples">[docs]</a>
 <span class="k">def</span> <span class="nf">random_subsamples</span><span class="p">(</span><span class="n">bd</span><span class="p">,</span><span class="n">nlist</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Get a random subsample set</span>
+<span class="sd">    n_list is a list containing a number of elements of each source</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">df_dict</span> <span class="o">=</span> <span class="n">bd</span><span class="o">.</span><span class="n">df_dict</span>
     <span class="n">ss_dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
@@ -175,8 +288,11 @@
 <div class="viewcode-block" id="random_props_subset">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.stats.random_props_subset">[docs]</a>
 <span class="k">def</span> <span class="nf">random_props_subset</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
-    <span class="n">substet</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span> <span class="n">n</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="n">substet</span></div>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Get a random props subset</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">subset</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span> <span class="n">n</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">subset</span></div>
 
 </pre></div>
 

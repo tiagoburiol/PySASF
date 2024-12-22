@@ -70,6 +70,23 @@
 <span class="c1">#    return stats.confidence_region(P, p = 95, space_dist=d)</span>
     
 <span class="c1">#def cm_feasebles(Ps):</span>
+    <span class="c1"># &#39;&#39;&#39;</span>
+    <span class="c1"># Checks for feasible solutions in a larger set of solutions.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Parameters</span>
+    <span class="c1"># --------------------</span>
+    <span class="c1"># Ps : numpy.ndarray</span>
+    <span class="c1">#     A list of proportions from a certain source, each row represents a point in the solution space.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Returns</span>
+    <span class="c1"># --------------------</span>
+    <span class="c1"># Ps_feas : numpy.ndarray</span>
+    <span class="c1">#     A 2D array containing only the feasible solutions, in which all values are greater than zero (the basin can&#39;t have a negative amount of a certain element).</span>
+    <span class="c1">#</span>
+    <span class="c1"># Raises</span>
+    <span class="c1"># --------------------</span>
+    <span class="c1"># None</span>
+    <span class="c1"># &#39;&#39;&#39;</span>
 <span class="c1">#    Ps_feas = Ps[[np.all(P&gt;0) for P in Ps]]</span>
 <span class="c1">#    return np.array(Ps_feas)</span>
 
@@ -80,6 +97,34 @@
 <a class="viewcode-back" href="../../pysasf.html#pysasf.clarkeminella.run_repetitions_and_reduction">[docs]</a>
 <span class="k">def</span> <span class="nf">run_repetitions_and_reduction</span> <span class="p">(</span><span class="n">bd</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">reductions</span><span class="p">,</span> <span class="n">percents</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                                    <span class="n">repetitions</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Runs multiple repetitions of subsampling and computes statistical measures for these samples.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    bd : object</span>
+<span class="sd">        Basin dataset.</span>
+
+<span class="sd">    key : str</span>
+<span class="sd">        The key identifying the specific data source to be analyzed (C,E,L,Y).</span>
+
+<span class="sd">    reductions : list</span>
+<span class="sd">        A list of integers representing the number of subsamples to be taken in each reduction.</span>
+
+<span class="sd">    repetitions : int, optional</span>
+<span class="sd">        The number of repetitions for each reduction (default is 50).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    df_out : pandas.DataFrame</span>
+
+<span class="sd">    None</span>
+<span class="sd">        The function updates the internal state of the `bd` object with computed statistics.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">inicio</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="n">cv</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span><span class="mi">100</span>
     <span class="n">CVs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -110,8 +155,28 @@
         <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Number of samples:&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">reductions</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">compute_area</span><span class="p">(</span><span class="n">pts</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Forms a ConvexHull around the points</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        --------------------</span>
+<span class="sd">        pts :</span>
+<span class="sd">            points around which you want to draw the Convex Hull and calculate its area.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------------------</span>
+<span class="sd">        area : float</span>
+<span class="sd">            float value that represents the area of the Convex Hull that encompasses the desired set of points.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        --------------------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If pts is not a set of numbers.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">hull</span> <span class="o">=</span> <span class="n">ConvexHull</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
         <span class="n">area</span> <span class="o">=</span> <span class="n">hull</span><span class="o">.</span><span class="n">volume</span> <span class="c1"># area for 2d points</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input pts must be a set of points.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">area</span>
     
     
@@ -203,7 +268,36 @@
 <span class="c1">#&#39;&#39;&#39;</span>
 
 <span class="c1">#def random_subsamples(bd,nlist):</span>
+    <span class="c1"># &#39;&#39;&#39;</span>
+    <span class="c1"># Computes proportions from random subsamples by calculating their means and optionally plots the results.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Parameters</span>
+    <span class="c1"># --------------------</span>
+    <span class="c1"># bd : object</span>
+    <span class="c1">#     An object containing the data sources and related methods for processing, including a dictionary of dataframes.</span>
+    <span class="c1">#</span>
+    <span class="c1"># reps : int</span>
+    <span class="c1">#     The number of repetitions for generating random subsamples.</span>
+    <span class="c1">#</span>
+    <span class="c1"># n_list : list</span>
+    <span class="c1">#     A list of integers specifying the sizes of the subsamples to be taken from the data. The length of this list must match the number of keys in `df_dict`.</span>
+    <span class="c1">#</span>
+    <span class="c1"># plot : bool, optional</span>
+    <span class="c1">#     A flag indicating whether to plot the results (default is True).</span>
+    <span class="c1">#</span>
+    <span class="c1"># Returns</span>
+    <span class="c1"># --------------------</span>
+    <span class="c1"># numpy.ndarray</span>
+    <span class="c1">#     An array of properties calculated from the subsamples, where each row corresponds to a repetition and contains the calculated properties.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Raises</span>
+    <span class="c1"># --------------------</span>
+    <span class="c1"># ValueError</span>
+    <span class="c1">#     If the length of `n_list` does not match the number of data sources in `df_dict`.</span>
+    <span class="c1"># &#39;&#39;&#39;</span>
 <span class="c1">#    df_dict = bd.df_dict</span>
+<span class="c1">#    if len(nlist) != len(df_dict.keys()):</span>
+<span class="c1">#         raise ValueError(&quot;The length of nlist must match the number of keys in df_dict.&quot;)</span>
 <span class="c1">#    ss_dict = {}</span>
 <span class="c1">#    for i, key in enumerate(df_dict.keys()):</span>
 <span class="c1">#        data = df_dict[key].values.astype(float)</span>
@@ -213,12 +307,39 @@
 <span class="c1">#&#39;&#39;&#39;</span>
 <span class="c1">#&#39;&#39;&#39;</span>
 <span class="c1">#def get_props_from_subsamples_means(bd,reps,n_list, plot=True):</span>
+    <span class="c1"># &#39;&#39;&#39;</span>
+    <span class="c1"># Gets proportions from subsamples by calculating means and optionally plots the results.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Parameters</span>
+    <span class="c1"># --------------------</span>
+    <span class="c1"># bd : object</span>
+    <span class="c1">#     BasinData class instance that contains its information.</span>
+    <span class="c1">#</span>
+    <span class="c1"># reps : int</span>
+    <span class="c1">#     The number of repetitions for generating random subsamples.</span>
+    <span class="c1">#</span>
+    <span class="c1"># n_list : list</span>
+    <span class="c1">#     A list of integers specifying the sizes of the subsamples to be taken from the data.</span>
+    <span class="c1">#</span>
+    <span class="c1"># plot : bool, optional</span>
+    <span class="c1">#     A flag indicating whether to plot the results (default is True).</span>
+    <span class="c1">#</span>
+    <span class="c1"># Returns</span>
+    <span class="c1"># --------------------</span>
+    <span class="c1"># Ps : numpy.ndarray</span>
+    <span class="c1">#     Proportions. An array of proportions calculated from the subsamples, where each row corresponds to a repetition.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Raises</span>
+    <span class="c1"># --------------------</span>
+    <span class="c1"># ValueError</span>
+    <span class="c1">#     If the length of `n_list` does not match the number of data sources in `bd`.</span>
+    <span class="c1"># &#39;&#39;&#39;</span>
 <span class="c1">#    df_dict = bd.df_dict</span>
 <span class="c1">#    Y = bd.df_dict[&#39;Y&#39;].values.astype(float)</span>
 <span class="c1">#    S_inv = np.linalg.inv(np.cov(Y.T))</span>
 <span class="c1">#    </span>
-<span class="c1">#    if len(df_dict.keys())!=len(n_list):</span>
-<span class="c1">#        print(&quot;The n_list needs to be of the same size of lands data.&quot;)</span>
+<span class="c1">#    if len(df_dict.keys()) != len(n_list):</span>
+<span class="c1">#     raise ValueError(&quot;The n_list needs to be of the same size as the number of data sources in bd, keys in df_dict.&quot;)</span>
 <span class="c1">#    else:</span>
 <span class="c1">#        Ps = []</span>
 <span class="c1">#        for i in range(reps):</span>

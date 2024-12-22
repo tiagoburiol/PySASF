@@ -58,6 +58,27 @@
 <div class="viewcode-block" id="mahalanobis_dist">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.distances.mahalanobis_dist">[docs]</a>
 <span class="k">def</span> <span class="nf">mahalanobis_dist</span><span class="p">(</span><span class="n">P_arr</span><span class="p">,</span> <span class="n">P0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Computes the Mahalanobis distance between a set of points (P_arr) and a reference point (P0, the average of all P_arr coordinates).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    P_arr : numpy.ndarray</span>
+<span class="sd">        An array where each row represents a point in the space.</span>
+
+<span class="sd">    P0 : array-like</span>
+<span class="sd">        A 1D array or list representing the reference point to which distances are calculated.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        An array of Mahalanobis distances from each point in P_arr to the reference point P0.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the dimensions of the points in P_arr do not match the dimensions of the reference point P0.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">S_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">P_arr</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
     <span class="n">dist</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">P_arr</span><span class="p">:</span>
@@ -69,6 +90,27 @@
 <div class="viewcode-block" id="euclidean_dist">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.distances.euclidean_dist">[docs]</a>
 <span class="k">def</span> <span class="nf">euclidean_dist</span><span class="p">(</span><span class="n">P_arr</span><span class="p">,</span> <span class="n">P0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Computes the Euclidean distance between a set of points (P_arr) and a reference point (P0).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    P_arr : numpy.ndarray</span>
+<span class="sd">        Set of points.</span>
+
+<span class="sd">    P0 : array-like</span>
+<span class="sd">        Reference point to which distances are calculated.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    dist : numpy.ndarray</span>
+<span class="sd">        An array of Euclidean distances from each point in P_arr to the reference point P0.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the dimensions of the points in P_arr do not match the dimensions of the reference point P0.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">dist</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">P_arr</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
        <span class="n">d</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">euclidean</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">P0</span><span class="p">)</span>
@@ -94,6 +136,29 @@
 <div class="viewcode-block" id="mahalanobis2d_dist">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.distances.mahalanobis2d_dist">[docs]</a>
 <span class="k">def</span> <span class="nf">mahalanobis2d_dist</span><span class="p">(</span><span class="n">P_arr</span><span class="p">,</span> <span class="n">P0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Computes the Mahalanobis distance in 2D between a set of points and a reference point.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    P_arr : numpy.ndarray</span>
+<span class="sd">        A 2D array where each row represents a point in 2D space. The function only considers the first two columns.</span>
+
+<span class="sd">    P0 : array-like</span>
+<span class="sd">        A 1D array or list representing the reference point in 2D to which distances are calculated.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        An array of Mahalanobis distances from each point in P_arr to the reference point P0.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the dimensions of the points in P_arr do not match the dimensions of the reference point P0.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If P0 is not an array of length 2.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">P_arr</span> <span class="o">=</span> <span class="n">P_arr</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
     <span class="n">vect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">P_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">P0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">P_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">P0</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span> 
     <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">P_arr</span><span class="p">)</span>

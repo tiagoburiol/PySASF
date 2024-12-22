@@ -55,18 +55,44 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-        
+
 <div class="viewcode-block" id="plot_cm_outputs">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.plots.plot_cm_outputs">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_cm_outputs</span><span class="p">(</span><span class="n">list_of_files</span><span class="p">,</span> <span class="n">x_key</span><span class="p">,</span> <span class="n">y_key</span><span class="p">,</span> 
-                    <span class="n">savefig</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;../output&#39;</span><span class="p">,</span> <span class="n">fname</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">fname</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;plot_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">x_key</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">y_key</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">plot_cm_outputs</span><span class="p">(</span><span class="n">list_of_files</span><span class="p">,</span> <span class="n">x_key</span><span class="p">,</span> <span class="n">y_key</span><span class="p">,</span>
+                    <span class="n">savefig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;../output&#39;</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots the inputs from multiple CSV (preferably) files&#39; x and y keys (column 1 and column 2).</span>
+
+<span class="sd">    This function reads data from a list of CSV files and plots the specified</span>
+<span class="sd">    x and y keys. It can also save the plot as a .png file to a specified path.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    list_of_files : list of str</span>
+<span class="sd">        A list containing the paths to the CSV files to be plotted.</span>
+<span class="sd">    x_key : str</span>
+<span class="sd">        The key (column name) to be used for the x-axis (must match the file&#39;s label for the column).</span>
+<span class="sd">    y_key : str</span>
+<span class="sd">        The key (column name) to be used for the y-axis (must match the file&#39;s label for the column).</span>
+<span class="sd">    savefig : bool, optional</span>
+<span class="sd">        If True, saves the plot as a PNG file. Default is False.</span>
+<span class="sd">    path : str, optional</span>
+<span class="sd">        The directory path where the plot will be saved if `savefig` is True.</span>
+<span class="sd">        Default is &#39;../output&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">        The function does not return any value. It either displays or saves the plot.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">fname</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;plot_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_key</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_key</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">fname</span>
-    
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>  
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="nf">_plot</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">list_of_files</span><span class="p">:</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
@@ -77,20 +103,21 @@
             <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Sample size&#39;</span><span class="p">)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;CV%, 50 runs: 95% Confidence Region of P1,P2&#39;</span><span class="p">)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-                  
+
     <span class="k">if</span> <span class="n">savefig</span><span class="p">:</span>
         <span class="n">_plot</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;.png&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Plot figure saved in:&#39;</span><span class="p">,</span><span class="n">path</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;.png&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Plot figure saved in:&#39;</span><span class="p">,</span> <span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">_plot</span><span class="p">()</span>
-        <span class="c1">#plt.grid()</span>
-        <span class="c1">#plt.show()</span>
+        <span class="c1"># plt.grid()</span>
+        <span class="c1"># plt.show()</span>
     <span class="k">return</span> <span class="kc">None</span></div>
 
-<span class="w">    </span>
+
+
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Plot and save a convex hull figure from a list of points. </span>
 <span class="sd">If points is list or array mxn, m is de number of points and</span>
@@ -98,72 +125,96 @@
 <span class="sd">the columns index corresponding of the x and y coordinates of </span>
 <span class="sd">points to be plotted.</span>
 <span class="sd">&#39;&#39;&#39;</span>
+
+
 <div class="viewcode-block" id="draw_hull">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.plots.draw_hull">[docs]</a>
-<span class="k">def</span> <span class="nf">draw_hull</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">x_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_col</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">savefig</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
-              <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Convexhull&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;convex_hull&#39;</span><span class="p">,</span><span class="n">fileformat</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">path</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">draw_hull</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">x_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_col</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">savefig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Convexhull&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;convex_hull&#39;</span><span class="p">,</span> <span class="n">fileformat</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please, set a path to save the convex hull figure.&#39;</span><span class="p">)</span>
-    
-    <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">ConvexHull</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>  
 
-    <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">P</span><span class="p">[:,</span><span class="n">x_col</span><span class="p">],</span><span class="n">P</span><span class="p">[:,</span><span class="n">y_col</span><span class="p">]))</span><span class="o">.</span><span class="n">T</span>
-    <span class="c1">#print(points.shape)</span>
+    <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">ConvexHull</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">P</span><span class="p">[:,</span> <span class="n">x_col</span><span class="p">],</span> <span class="n">P</span><span class="p">[:,</span> <span class="n">y_col</span><span class="p">]))</span><span class="o">.</span><span class="n">T</span>
+    <span class="c1"># print(points.shape)</span>
     <span class="n">hull</span> <span class="o">=</span> <span class="n">ConvexHull</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-    
-    <span class="c1">#for simplex in hull.simplices:</span>
-        <span class="c1">#plt.plot(points[simplex, 0], points[simplex, 1], &#39;k-&#39;,lw=1)</span>
+
+    <span class="c1"># for simplex in hull.simplices:</span>
+    <span class="c1"># plt.plot(points[simplex, 0], points[simplex, 1], &#39;k-&#39;,lw=1)</span>
     <span class="k">def</span> <span class="nf">_plot</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">hull</span><span class="o">.</span><span class="n">simplices</span><span class="p">:</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">simplex</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">simplex</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="c1">#_ = convex_hull_plot_2d(hull)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">simplex</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">simplex</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># _ = convex_hull_plot_2d(hull)</span>
         <span class="n">Pm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Pm</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">Pm</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;ro&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">points</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">points</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span>  <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Pm</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Pm</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;ro&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;P&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">x_col</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;P&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">y_col</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">1.0</span><span class="p">))</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">1.0</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;P&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_col</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;P&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_col</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+
     <span class="k">if</span> <span class="n">savefig</span><span class="p">:</span>
         <span class="n">_plot</span><span class="p">()</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">fileformat</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Plot figure saved in:&#39;</span><span class="p">,</span><span class="n">path</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">fileformat</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">fileformat</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Plot figure saved in:&#39;</span><span class="p">,</span> <span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">fileformat</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">_plot</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-        
-    <span class="k">return</span> <span class="kc">None</span> <span class="c1">#plt.gca()</span></div>
+
+    <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># plt.gca()</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">props_histo</span><span class="p">(</span><span class="n">props</span><span class="p">):</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">dim</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="n">dim</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-    
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="n">dim</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">dim</span><span class="p">,</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">n</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">patches</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">props</span><span class="p">[:,</span><span class="n">j</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span> 
-        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;P&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">patches</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">props</span><span class="p">[:,</span> <span class="n">j</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;P&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
 
 <div class="viewcode-block" id="props_histo">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.plots.props_histo">[docs]</a>
 <span class="k">def</span> <span class="nf">props_histo</span><span class="p">(</span><span class="n">bd</span><span class="p">):</span>
-    
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots a histogram for each property in the input array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    props : numpy.ndarray</span>
+<span class="sd">        A 2D numpy array containing the proportions to be plotted.</span>
+<span class="sd">        The array should have shape (n, dim), where n is the number</span>
+<span class="sd">        of samples and dim is the number of proportions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">        The function does not return any value. It displays the plots.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">bd</span><span class="o">.</span><span class="n">df_dict</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">dim</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="n">dim</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-    
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="n">dim</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">dim</span><span class="p">,</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">n</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">patches</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">props</span><span class="p">[:,</span><span class="n">j</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span> 
-        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;P&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">patches</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">props</span><span class="p">[:,</span> <span class="n">j</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;P&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
@@ -171,8 +222,26 @@
 <div class="viewcode-block" id="data_histo">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.plots.data_histo">[docs]</a>
 <span class="k">def</span> <span class="nf">data_histo</span><span class="p">(</span><span class="n">bd</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots a histogram for each DataFrame associated with the sources s in the basin dataframe.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bd : object</span>
+<span class="sd">        A basin&#39;s dataframe that contains:</span>
+<span class="sd">        - sources: Each of the sources in the basin.</span>
+<span class="sd">        - df_dict: A dictionary where keys are the sources &#39;s&#39; and values are the sources&#39; chemical tracers compositions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">        The function does not return any value. It displays the histograms for each DataFrame.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">bd</span><span class="o">.</span><span class="n">sources</span><span class="p">:</span>
-        <span class="c1">#print(s)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">bd</span><span class="o">.</span><span class="n">df_dict</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
         <span class="n">df</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span></div>
 

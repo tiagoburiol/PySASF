@@ -56,11 +56,34 @@
 <div class="viewcode-block" id="read_datafile">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.readers.read_datafile">[docs]</a>
 <span class="k">def</span> <span class="nf">read_datafile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a file, either .csv or .xlsx, into a DataFrame.</span>
+
+<span class="sd">    If the last 4 characters are &#39;xlsx&#39;, it reads it as an Excel file.</span>
+<span class="sd">    If the last 3 characters are &#39;csv&#39;, it reads it as a CSV file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        The name of the file (.csv or .xlsx).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.DataFrame</span>
+<span class="sd">        DataFrame containing the information within the file.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the file extension is not supported.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:])</span><span class="o">==</span><span class="s1">&#39;xlsx&#39;</span><span class="p">:</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     
-    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span><span class="o">==</span><span class="s1">&#39;csv&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span><span class="o">==</span><span class="s1">&#39;csv&#39;</span><span class="p">:</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported file format. Please provide a .csv or .xlsx file.&quot;</span><span class="p">)</span>
  
     
     <span class="k">return</span> <span class="n">df</span></div>

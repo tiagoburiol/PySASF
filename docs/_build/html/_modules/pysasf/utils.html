@@ -58,12 +58,27 @@
 
 
 <span class="c1">#https://learner-cares.medium.com/handy-python-pandas-for-data-normalization-and-scaling-9658846de8fc</span>
-<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">não esá sendo usado para nada</span>
-<span class="sd">&#39;&#39;&#39;</span>
 <div class="viewcode-block" id="minmax_scale">
 <a class="viewcode-back" href="../../pysasf.html#pysasf.utils.minmax_scale">[docs]</a>
 <span class="k">def</span> <span class="nf">minmax_scale</span><span class="p">(</span><span class="n">bd</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function is currently not in use.</span>
+<span class="sd">    Scale the features of a dataset to the range [0, 1] using Min-Max scaling.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    bd : object</span>
+<span class="sd">        An object containing a dictionary of DataFrames in its `df_dict` attribute.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    bd_n : object</span>
+<span class="sd">        A new object with the same structure as `bd`, but with the DataFrames in `df_dict` scaled to the range [0, 1] using Min-Max scaling.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    --------------------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">MinMaxScaler</span>
     <span class="kn">import</span> <span class="nn">copy</span>
     

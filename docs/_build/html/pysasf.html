@@ -172,7 +172,28 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.clarkeminella.run_repetitions_and_reduction">
 <span class="sig-prename descclassname"><span class="pre">pysasf.clarkeminella.</span></span><span class="sig-name descname"><span class="pre">run_repetitions_and_reduction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repetitions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/clarkeminella.html#run_repetitions_and_reduction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.clarkeminella.run_repetitions_and_reduction" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Runs multiple repetitions of subsampling and computes statistical measures for these samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bd</strong> (<em>object</em>) – Basin dataset.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The key identifying the specific data source to be analyzed (C,E,L,Y).</p></li>
+<li><p><strong>reductions</strong> (<em>list</em>) – A list of integers representing the number of subsamples to be taken in each reduction.</p></li>
+<li><p><strong>repetitions</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of repetitions for each reduction (default is 50).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>df_out</strong> (<em>pandas.DataFrame</em>)</p></li>
+<li><p><em>None</em> – The function updates the internal state of the <cite>bd</cite> object with computed statistics.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-pysasf.distances">
@@ -183,17 +204,74 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.distances.euclidean_dist">
 <span class="sig-prename descclassname"><span class="pre">pysasf.distances.</span></span><span class="sig-name descname"><span class="pre">euclidean_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/distances.html#euclidean_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.distances.euclidean_dist" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Computes the Euclidean distance between a set of points (P_arr) and a reference point (P0).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>P_arr</strong> (<em>numpy.ndarray</em>) – Set of points.</p></li>
+<li><p><strong>P0</strong> (<em>array-like</em>) – Reference point to which distances are calculated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dist</strong> – An array of Euclidean distances from each point in P_arr to the reference point P0.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the dimensions of the points in P_arr do not match the dimensions of the reference point P0.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.distances.mahalanobis2d_dist">
 <span class="sig-prename descclassname"><span class="pre">pysasf.distances.</span></span><span class="sig-name descname"><span class="pre">mahalanobis2d_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/distances.html#mahalanobis2d_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.distances.mahalanobis2d_dist" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Computes the Mahalanobis distance in 2D between a set of points and a reference point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>P_arr</strong> (<em>numpy.ndarray</em>) – A 2D array where each row represents a point in 2D space. The function only considers the first two columns.</p></li>
+<li><p><strong>P0</strong> (<em>array-like</em>) – A 1D array or list representing the reference point in 2D to which distances are calculated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An array of Mahalanobis distances from each point in P_arr to the reference point P0.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the dimensions of the points in P_arr do not match the dimensions of the reference point P0.</p></li>
+<li><p><strong>ValueError</strong> – If P0 is not an array of length 2.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.distances.mahalanobis_dist">
 <span class="sig-prename descclassname"><span class="pre">pysasf.distances.</span></span><span class="sig-name descname"><span class="pre">mahalanobis_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/distances.html#mahalanobis_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.distances.mahalanobis_dist" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Computes the Mahalanobis distance between a set of points (P_arr) and a reference point (P0, the average of all P_arr coordinates).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>P_arr</strong> (<em>numpy.ndarray</em>) – An array where each row represents a point in the space.</p></li>
+<li><p><strong>P0</strong> (<em>array-like</em>) – A 1D array or list representing the reference point to which distances are calculated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An array of Mahalanobis distances from each point in P_arr to the reference point P0.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the dimensions of the points in P_arr do not match the dimensions of the reference point P0.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-pysasf.plots">
@@ -204,7 +282,24 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.plots.data_histo">
 <span class="sig-prename descclassname"><span class="pre">pysasf.plots.</span></span><span class="sig-name descname"><span class="pre">data_histo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/plots.html#data_histo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.plots.data_histo" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plots a histogram for each DataFrame associated with the sources s in the basin dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bd</strong> (<em>object</em>) – A basin’s dataframe that contains:
+- sources: Each of the sources in the basin.
+- df_dict: A dictionary where keys are the sources ‘s’ and values are the sources’ chemical tracers compositions.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The function does not return any value. It displays the histograms for each DataFrame.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.plots.draw_hull">
@@ -214,12 +309,50 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.plots.plot_cm_outputs">
 <span class="sig-prename descclassname"><span class="pre">pysasf.plots.</span></span><span class="sig-name descname"><span class="pre">plot_cm_outputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_of_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savefig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'../output'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/plots.html#plot_cm_outputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.plots.plot_cm_outputs" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plots the inputs from multiple CSV (preferably) files’ x and y keys (column 1 and column 2).</p>
+<p>This function reads data from a list of CSV files and plots the specified
+x and y keys. It can also save the plot as a .png file to a specified path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list_of_files</strong> (<em>list</em><em> of </em><em>str</em>) – A list containing the paths to the CSV files to be plotted.</p></li>
+<li><p><strong>x_key</strong> (<em>str</em>) – The key (column name) to be used for the x-axis (must match the file’s label for the column).</p></li>
+<li><p><strong>y_key</strong> (<em>str</em>) – The key (column name) to be used for the y-axis (must match the file’s label for the column).</p></li>
+<li><p><strong>savefig</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, saves the plot as a PNG file. Default is False.</p></li>
+<li><p><strong>path</strong> (<em>str</em><em>, </em><em>optional</em>) – The directory path where the plot will be saved if <cite>savefig</cite> is True.
+Default is ‘../output’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The function does not return any value. It either displays or saves the plot.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.plots.props_histo">
 <span class="sig-prename descclassname"><span class="pre">pysasf.plots.</span></span><span class="sig-name descname"><span class="pre">props_histo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/plots.html#props_histo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.plots.props_histo" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plots a histogram for each property in the input array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>props</strong> (<em>numpy.ndarray</em>) – A 2D numpy array containing the proportions to be plotted.
+The array should have shape (n, dim), where n is the number
+of samples and dim is the number of proportions.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The function does not return any value. It displays the plots.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-pysasf.readers">
@@ -230,7 +363,24 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.readers.read_datafile">
 <span class="sig-prename descclassname"><span class="pre">pysasf.readers.</span></span><span class="sig-name descname"><span class="pre">read_datafile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/readers.html#read_datafile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.readers.read_datafile" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Reads a file, either .csv or .xlsx, into a DataFrame.</p>
+<p>If the last 4 characters are ‘xlsx’, it reads it as an Excel file.
+If the last 3 characters are ‘csv’, it reads it as a CSV file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The name of the file (.csv or .xlsx).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame containing the information within the file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the file extension is not supported.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-pysasf.solvers">
@@ -241,27 +391,119 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.solvers.solve_gls_4x4">
 <span class="sig-prename descclassname"><span class="pre">pysasf.solvers.</span></span><span class="sig-name descname"><span class="pre">solve_gls_4x4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S_inv</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/solvers.html#solve_gls_4x4"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.solvers.solve_gls_4x4" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Solves the generalized least squares (GLS) problem for a 4x4 system of equations.
+Purpose: to solve the overdetermined linear system of equations by generalized least squares method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – A 1D numpy array containing the selected Y (target) values.</p></li>
+<li><p><strong>X</strong> (<em>numpy.ndarray</em>) – A 2D numpy array containing the sources’ selected proportions values.</p></li>
+<li><p><strong>S_inv</strong> (<em>numpy.ndarray</em>) – A 2D numpy array containing the inverse of the covariance matrix.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 1D numpy array containing the estimated parameters of the GLS model.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.solvers.solve_minimize">
 <span class="sig-prename descclassname"><span class="pre">pysasf.solvers.</span></span><span class="sig-name descname"><span class="pre">solve_minimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/solvers.html#solve_minimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.solvers.solve_minimize" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Solves an optimization problem using the scipy.optimize.minimize function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – A 1D numpy array containing the selected Y (target) values.</p></li>
+<li><p><strong>X</strong> (<em>numpy.ndarray</em>) – A 2D numpy array containing the sources’ selected proportions values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 1D numpy array containing the estimated parameters of the optimization problem.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.solvers.solve_minimize2">
 <span class="sig-prename descclassname"><span class="pre">pysasf.solvers.</span></span><span class="sig-name descname"><span class="pre">solve_minimize2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/solvers.html#solve_minimize2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.solvers.solve_minimize2" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Solves a constrained error minimization problem using the SciPy <cite>minimize</cite> function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – A 1D numpy array containing the selected Y (target) values.</p></li>
+<li><p><strong>A</strong> (<em>numpy.ndarray</em>) – A 2D numpy array containing the sources’ selected proportions values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The optimal possible proportions solution vector.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.solvers.solve_ols">
 <span class="sig-prename descclassname"><span class="pre">pysasf.solvers.</span></span><span class="sig-name descname"><span class="pre">solve_ols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/solvers.html#solve_ols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.solvers.solve_ols" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Solves the ordinary least squares (OLS) problem.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – A 1D numpy array containing the selected Y (target) values.</p></li>
+<li><p><strong>X</strong> (<em>numpy.ndarray</em>) – A 2D numpy array containing the sources’ selected proportions values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 1D numpy array containing the estimated parameters of the OLS model.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.solvers.solve_ols_cm">
 <span class="sig-prename descclassname"><span class="pre">pysasf.solvers.</span></span><span class="sig-name descname"><span class="pre">solve_ols_cm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/solvers.html#solve_ols_cm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.solvers.solve_ols_cm" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Solves the ordinary least squares (OLS) problem with constant mean (CM) constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – A 1D numpy array containing the selected Y (target) values.</p></li>
+<li><p><strong>X</strong> (<em>numpy.ndarray</em>) – A 2D numpy array containing the sources’ selected proportions values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 1D numpy array containing the estimated parameters of the OLS-CM model, excluding the constant term.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-pysasf.stats">
@@ -272,37 +514,136 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.stats.confidence_region">
 <span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">confidence_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">space_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mahalanobis'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#confidence_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.confidence_region" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Calculates the confidence region for the given set of points P, based on the specified confidence level
+(default is 95%) and distance metric (default is ‘mahalanobis’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>P</strong> (<em>numpy.ndarray</em>) – A 2D numpy array containing the set of points for which the confidence region is to be calculated.</p></li>
+<li><p><strong>p</strong> (<em>{int</em><em>, </em><em>optional}</em>) – The confidence level, expressed as a percentage. Defaults to 95.</p></li>
+<li><p><strong>space_dist</strong> (<em>str</em><em>, </em><em>optional</em>) – The distance metric to use for calculating the confidence region. Can be either ‘mahalanobis’ or ‘mahalanobis2d’. Defaults to ‘mahalanobis’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Psorted_cropped</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray: A numpy array containing the points that fall within the specified confidence region, within the mahalanobis distance metric.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.stats.infos">
 <span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">infos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#infos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.infos" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Generate a DataFrame containing the sample sizes for each key in the input object.</p>
+<p>This function iterates through the dictionary of DataFrames contained in the
+<cite>bd</cite> object and creates a summary DataFrame that lists the number of samples
+(rows) for each DataFrame associated with the keys in <cite>bd.df_dict</cite>. The resulting
+DataFrame has the keys as index and the sample sizes as values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bd</strong> (<em>object</em>) – An object that contains a dictionary of DataFrames in the attribute <cite>df_dict</cite>
+and a list of tracer names in the attribute <cite>tracers</cite>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A DataFrame where the index represents the keys from <cite>bd.df_dict</cite> and the
+values represent the sample sizes (number of rows) for each corresponding DataFrame.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AttributeError</strong> – If <cite>bd</cite> does not have the attributes <cite>df_dict</cite> or <cite>tracers</cite>.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>#TODO: Need to provide more comments for these!</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.stats.means">
 <span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">means</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#means"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.means" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Calculates the mean values for each column in the dataframes stored in the bd.df_dict dictionary
+(average) value of each element in each source.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bd</strong> (<em>object</em>) – An instance of a BasinData class Basin. Contains a dictionary of dataframes, bd.df_dict.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>means</strong> – A dataframe containing the mean values for each column in the dataframes stored in bd.df_dict
+(average value of each element in each source – average of the element value of all samples from the same source).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.stats.random_props_subset">
 <span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">random_props_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#random_props_subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.random_props_subset" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get a random props subset</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.stats.random_subsamples">
 <span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">random_subsamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlist</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#random_subsamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.random_subsamples" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get a random subsample set
+n_list is a list containing a number of elements of each source</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.stats.randon_props_subsamples">
 <span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">randon_props_subsamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_feasebles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#randon_props_subsamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.randon_props_subsamples" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Selects a random subsample of n rows from the dataframe stored in bd.df_dict[key], and returns the corresponding rows from the bd.combs and bd.props arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bd</strong> (<em>object</em>) – An instance of a class that contains a dictionary of dataframes (bd.df_dict), a combinations array (bd.combs), and a properties array (bd.props).</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The key corresponding to the dataframe in bd.df_dict from which the subsample will be selected.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – The number of rows to select in the subsample.</p></li>
+<li><p><strong>only_feasibles</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, only selects rows that are feasible (i.e., where bd.feas is True).Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>selected_combs</strong> (<em>numpy.ndarray</em>) – A 2D numpy array containing the rows from bd.combs that correspond to the selected subsample.</p></li>
+<li><p><strong>selected_Ps</strong> (<em>numpy.ndarray</em>) – A 1D numpy array containing the rows from bd.props that correspond to the selected subsample.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.stats.std">
 <span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#std"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.std" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Calculates the standard deviation values for each column in the dataframes stored in the bd.df_dict dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bd</strong> (<em>object</em>) – An instance of a BasinData class Basin. Contains a dictionary of dataframes, bd.df_dict.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>std</strong> – A dataframe containing the standard deviation values for each column in the dataframes stored in bd.df_dict.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-pysasf.utils">
@@ -313,7 +654,23 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pysasf.utils.minmax_scale">
 <span class="sig-prename descclassname"><span class="pre">pysasf.utils.</span></span><span class="sig-name descname"><span class="pre">minmax_scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/utils.html#minmax_scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.utils.minmax_scale" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This function is currently not in use.
+Scale the features of a dataset to the range [0, 1] using Min-Max scaling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bd</strong> (<em>object</em>) – An object containing a dictionary of DataFrames in its <cite>df_dict</cite> attribute.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>bd_n</strong> – A new object with the same structure as <cite>bd</cite>, but with the DataFrames in <cite>df_dict</cite> scaled to the range [0, 1] using Min-Max scaling.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-pysasf">
