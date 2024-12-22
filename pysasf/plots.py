@@ -14,6 +14,31 @@ import numpy as np
         
 def plot_cm_outputs(list_of_files, x_key, y_key, 
                     savefig = False, path='../output', fname = None):
+    """
+    Plots the inputs from multiple CSV (preferably) files' x and y keys (column 1 and column 2).
+
+    This function reads data from a list of CSV files and plots the specified
+    x and y keys. It can also save the plot as a .png file to a specified path.
+
+    Parameters
+    ----------
+    list_of_files : list of str
+        A list containing the paths to the CSV files to be plotted.
+    x_key : str
+        The key (column name) to be used for the x-axis (must match the file's label for the column).
+    y_key : str
+        The key (column name) to be used for the y-axis (must match the file's label for the column).
+    savefig : bool, optional
+        If True, saves the plot as a PNG file. Default is False.
+    path : str, optional
+        The directory path where the plot will be saved if `savefig` is True.
+        Default is '../output'.
+
+    Returns
+    -------
+    None
+        The function does not return any value. It either displays or saves the plot.
+    """
     if fname==None:
         filename = 'plot_'+str(x_key)+'_'+str(y_key)
     else:
@@ -102,6 +127,25 @@ def props_histo(props):
     plt.show()
 
 def props_histo(bd):
+    """
+    Plots a histogram for each property in the input array.
+
+    Parameters
+    ----------
+    props : numpy.ndarray
+        A 2D numpy array containing the proportions to be plotted.
+        The array should have shape (n, dim), where n is the number
+        of samples and dim is the number of proportions.
+
+    Returns
+    -------
+    None
+        The function does not return any value. It displays the plots.
+
+    Raises
+    ------
+    None
+    """
     
     bd.df_dict
     n = props.shape[0]
@@ -116,8 +160,26 @@ def props_histo(bd):
 
 
 def data_histo(bd):
+    """
+    Plots a histogram for each DataFrame associated with the sources s in the basin dataframe.
+
+    Parameters
+    ----------
+    bd : object
+        A basin's dataframe that contains:
+        - sources: Each of the sources in the basin.
+        - df_dict: A dictionary where keys are the sources 's' and values are the sources' chemical tracers compositions.
+
+    Returns
+    -------
+    None
+        The function does not return any value. It displays the histograms for each DataFrame.
+
+    Raises
+    ------
+    None
+    """
     for s in bd.sources:
-        #print(s)
         df = bd.df_dict[s]
         df.hist()
 
