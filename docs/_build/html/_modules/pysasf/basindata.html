@@ -1,0 +1,446 @@
+
+
+<!doctype html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pysasf.basindata &#8212; PySASF 0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="../../_static/documentation_options.js?v=db78e746"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PySASF 0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pysasf.basindata</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pysasf.basindata</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on jul 2024</span>
+
+<span class="sd">@author: tiagoburiol</span>
+<span class="sd">@coworker: buligonl; josue@sehnem.com</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">clear_output</span>
+
+<span class="c1"># PySASF imports</span>
+<span class="kn">from</span> <span class="nn">pysasf</span> <span class="kn">import</span> <span class="n">readers</span>
+<span class="kn">from</span> <span class="nn">pysasf</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">from</span> <span class="nn">pysasf</span> <span class="kn">import</span> <span class="n">solvers</span>
+
+
+<div class="viewcode-block" id="BasinData">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.basindata.BasinData">[docs]</a>
+<span class="k">class</span> <span class="nc">BasinData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to store and process a basin sediments dataset. </span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df_dict: str</span>
+<span class="sd">        Dictionary of Pandas dataframes for store sources and suspended sediments data.</span>
+<span class="sd">    tracers: str list</span>
+<span class="sd">        List of tracer names.   </span>
+<span class="sd">    sources: str list</span>
+<span class="sd">        List of sediment sources names. </span>
+<span class="sd">    combs: numpy.array</span>
+<span class="sd">        Array of indexes (int) for all possible combinations of data samples.</span>
+<span class="sd">    props: numpy.array</span>
+<span class="sd">        Array of all proportions solutions for all combinations (combs) of data samples.</span>
+<span class="sd">    feas: boolean list</span>
+<span class="sd">        List of feaseble propportions (&#39;props[feas]&#39; return only feasebles). </span>
+<span class="sd">    solver_option = srt</span>
+<span class="sd">        Solver options (&#39;ols&#39; or &#39;gls&#39;) to calculate the proportions. Default is &#39;ols&#39;.</span>
+<span class="sd">    cm_df: pandas DataFrame</span>
+<span class="sd">        The dataframe containing the results from clarkeminella analysis scheme.</span>
+<span class="sd">        </span>
+<span class="sd">    Methods:</span>
+<span class="sd">    -------</span>
+<span class="sd">    infos():</span>
+<span class="sd">        Returns a dataframe whith basic dataset infos (names, sources and sample sizes).</span>
+<span class="sd">    means():</span>
+<span class="sd">        Returns a dataframe whith means of dataset.</span>
+<span class="sd">    std():</span>
+<span class="sd">        Returns a dataframe whith std of dataset.</span>
+<span class="sd">    set_solver_option(opt):</span>
+<span class="sd">        To set the solver option for overdeterminated system. Options are &#39;ols&#39;(default) and &#39;gls&#39;.</span>
+<span class="sd">    set_output_folder(path):</span>
+<span class="sd">        Set the output folder (str) to save files. </span>
+<span class="sd">    load_combs_and_props_from_files(fc,fp):</span>
+<span class="sd">        Function to load the combinations and the proportions saved files.</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Internal Methods:</span>
+<span class="sd">    -----------------</span>
+<span class="sd">    _save_array_in_file(self,array,output_folder,filename,fileformat,numberformat):</span>
+<span class="sd">        Used to save a array in a output file.</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">readers</span><span class="o">.</span><span class="n">read_datafile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sources</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">combs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feas</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">S_inv</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solver_option</span> <span class="o">=</span> <span class="s1">&#39;ols&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">),</span> <span class="s2">&quot;PySASF/output&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cm_df</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cm_all_Pfea</span> <span class="o">=</span> <span class="kc">None</span>
+
+        
+        <span class="c1"># split data on a dataframes dictionary</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="n">df_temp2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">==</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span><span class="o">!=</span><span class="s1">&#39;Target&#39;</span><span class="p">:</span>
+                <span class="n">df_temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tracers</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">=</span><span class="n">df_temp</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">df_temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span><span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tracers</span><span class="p">)</span>
+                <span class="n">df_temp2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">df_temp2</span><span class="p">,</span> <span class="n">df_temp</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_dict</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">df_temp2</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">Y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_dict</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">S_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="BasinData.infos">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.basindata.BasinData.infos">[docs]</a>
+    <span class="k">def</span> <span class="nf">infos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">infos</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+        
+<div class="viewcode-block" id="BasinData.means">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.basindata.BasinData.means">[docs]</a>
+    <span class="k">def</span> <span class="nf">means</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">means</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="BasinData.std">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.basindata.BasinData.std">[docs]</a>
+    <span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+        
+<div class="viewcode-block" id="BasinData.set_solver_option">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.basindata.BasinData.set_solver_option">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_solver_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">solver_option</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solver_option</span> <span class="o">=</span> <span class="n">solver_option</span></div>
+
+
+<div class="viewcode-block" id="BasinData.get_feasebles">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.basindata.BasinData.get_feasebles">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_feasebles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Ps</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">option</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">feas</span> <span class="o">=</span> <span class="n">Ps</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">P</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">Ps</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">option</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">feas</span> <span class="o">=</span> <span class="n">Ps</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">P</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">1</span> <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">Ps</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">option</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+            <span class="n">feas</span> <span class="o">=</span> <span class="n">Ps</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">P</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">1</span> <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">Ps</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">feas</span></div>
+
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Identify feasebles ans store in the &#39;self.feas&#39; boolean array  </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="BasinData.set_feasebles">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.basindata.BasinData.set_feasebles">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_feasebles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Ps</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">option</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">feas_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">P</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">Ps</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">option</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">feas_id</span> <span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">P</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">1</span> <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">Ps</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">option</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+            <span class="n">feas_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">P</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">1</span> <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">Ps</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feas</span> <span class="o">=</span> <span class="n">feas_id</span></div>
+
+        
+
+
+    <span class="c1"># SET OUTPUT SOLVER ##############################################################</span>
+<div class="viewcode-block" id="BasinData.set_output_folder">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.basindata.BasinData.set_output_folder">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_output_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+      
+        <span class="k">if</span> <span class="n">path</span><span class="o">!=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;Setting output folder as:&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="c1"># Setting the folder for output saves</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Folder &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="si">}</span><span class="s2">&#39; criated succesfully.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Folder to save output files is: &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span></div>
+
+
+    <span class="c1"># SAVE FILE ########################################################################</span>
+    <span class="k">def</span> <span class="nf">_save_array_in_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">array</span><span class="p">,</span><span class="n">output_folder</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span><span class="n">fileformat</span><span class="p">,</span><span class="n">numberformat</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_output_folder</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fileformat</span> <span class="o">==</span> <span class="s1">&#39;txt&#39;</span><span class="p">:</span>          
+            <span class="k">if</span> <span class="n">numberformat</span> <span class="o">==</span><span class="s1">&#39;int&#39;</span><span class="p">:</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">fileformat</span><span class="p">,</span><span class="n">array</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">numberformat</span> <span class="o">==</span><span class="s1">&#39;float32&#39;</span><span class="p">:</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">fileformat</span><span class="p">,</span><span class="n">array</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%1.4f</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fileformat</span> <span class="o">==</span> <span class="s1">&#39;gzip&#39;</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+            <span class="kn">import</span> <span class="nn">pyarrow.parquet</span> <span class="k">as</span> <span class="nn">pq</span>
+            <span class="k">if</span> <span class="n">numberformat</span> <span class="o">==</span><span class="s1">&#39;int&#39;</span><span class="p">:</span>
+                <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">numberformat</span> <span class="o">==</span><span class="s1">&#39;float32&#39;</span><span class="p">:</span>
+                <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">([</span><span class="n">array</span><span class="o">.</span><span class="n">ravel</span><span class="p">()],[</span><span class="s1">&#39;col0&#39;</span><span class="p">])</span>
+            <span class="n">pq</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">fileformat</span><span class="p">,</span>
+                           <span class="n">compression</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
+            
+    <span class="c1"># LOAD FILES ########################################################################</span>
+<div class="viewcode-block" id="BasinData.load_combs_and_props_from_files">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.basindata.BasinData.load_combs_and_props_from_files">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_combs_and_props_from_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="n">fp</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loading combs and props files from:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fc</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;txt&#39;</span> <span class="ow">and</span> <span class="n">fp</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;txt&#39;</span><span class="p">:</span>
+            <span class="n">combs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">fc</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">Ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">combs</span> <span class="o">=</span> <span class="n">combs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">Ps</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">fc</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">):</span><span class="o">-</span><span class="mi">10</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">fc</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;gzip&#39;</span> <span class="ow">and</span> <span class="n">fp</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;gzip&#39;</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">pyarrow.parquet</span> <span class="k">as</span> <span class="nn">pq</span>
+            <span class="n">combs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pq</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">fc</span><span class="p">))</span>
+            <span class="n">array_shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">combs</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span><span class="mi">4</span><span class="p">)</span>
+            <span class="n">combs</span> <span class="o">=</span> <span class="n">combs</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">array_shape</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">combs</span> <span class="o">=</span> <span class="n">combs</span>
+            <span class="n">Ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pq</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span>
+            <span class="n">array_shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Ps</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">Ps</span> <span class="o">=</span> <span class="n">Ps</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">array_shape</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">Ps</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">fc</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">):</span><span class="o">-</span><span class="mi">11</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_feasebles</span><span class="p">(</span><span class="n">Ps</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">combs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span></div>
+
+
+<div class="viewcode-block" id="BasinData.load_feasebles_from_file">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.basindata.BasinData.load_feasebles_from_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_feasebles_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ff</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loading feasebles proportion indexes from:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ff</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;txt&#39;</span><span class="p">:</span>
+            <span class="n">feas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">ff</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feas</span> <span class="o">=</span> <span class="n">feas</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ff</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;gzip&#39;</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">pyarrow.parquet</span> <span class="k">as</span> <span class="nn">pq</span>
+            <span class="n">feas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pq</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">ff</span><span class="p">))</span>
+            <span class="c1">#array_shape = (int(len(feas)))</span>
+            <span class="c1">#feas = feas.reshape(array_shape)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feas</span> <span class="o">=</span> <span class="n">feas</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">feas</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_save_feasebles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feas</span><span class="p">,</span> <span class="n">output_folder</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span><span class="nb">format</span><span class="p">):</span>
+        <span class="c1">#booleans = [np.all(P&gt;0) for P in Ps]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_array_in_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feas</span><span class="p">,</span><span class="n">output_folder</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span><span class="nb">format</span><span class="p">,</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;Feasebles boolean array is saded in:&#39;</span><span class="p">,</span><span class="n">output_folder</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="nb">format</span><span class="p">)</span>
+        <span class="c1">#self.feas=booleans</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    
+   <span class="c1">################################################################################</span>
+<div class="viewcode-block" id="BasinData.calcule_all_props">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.basindata.BasinData.calcule_all_props">[docs]</a>
+    <span class="k">def</span> <span class="nf">calcule_all_props</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solve_opt</span><span class="o">=</span><span class="s1">&#39;ols&#39;</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+        <span class="n">df_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_dict</span>
+        <span class="n">S_inv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">S_inv</span>
+    
+        <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="o">+</span><span class="n">key</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">size</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+    
+        <span class="c1"># Gera todas as combinações possíveis</span>
+        <span class="n">combs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">idx</span><span class="p">))</span>
+
+        <span class="c1">#cria um array vazio para todos os Ps</span>
+        <span class="n">Ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">combs</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">comb</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">combs</span><span class="p">):</span>
+            <span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="p">:</span>
+                <span class="n">clear_output</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">percent</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="n">k</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">combs</span><span class="p">),</span><span class="mi">2</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Calculating proportion:&#39;</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="s1">&#39;of&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">combs</span><span class="p">),</span>
+                      <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">percent</span> <span class="p">,</span><span class="s1">&#39;%)&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">t1</span><span class="o">=</span><span class="n">t2</span>
+                
+            <span class="c1">#clear_output(wait=False)</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">comb</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">comb</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">df_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+                <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span> 
+            <span class="n">y</span> <span class="o">=</span> <span class="n">df_dict</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+            <span class="c1">#SOLVE</span>
+            <span class="k">if</span> <span class="n">solve_opt</span> <span class="o">==</span> <span class="s1">&#39;ols0&#39;</span><span class="p">:</span>
+                <span class="n">P</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">solve_ols</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">X</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">solve_opt</span> <span class="o">==</span> <span class="s1">&#39;gls&#39;</span><span class="p">:</span>
+                <span class="n">P</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">solve_gls_4x4</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">S_inv</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">solve_opt</span> <span class="o">==</span> <span class="s1">&#39;ols&#39;</span><span class="p">:</span>
+                <span class="n">P</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">solve_ols_cm</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">X</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">solve_opt</span> <span class="o">==</span> <span class="s1">&#39;opt&#39;</span><span class="p">:</span>
+                <span class="n">P</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">solve_minimize</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">X</span><span class="p">)</span>
+            <span class="n">Ps</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_feasebles</span><span class="p">(</span><span class="n">Ps</span><span class="p">)</span>
+        <span class="n">clear_output</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">combs</span><span class="p">,</span> <span class="n">Ps</span></div>
+
+    <span class="c1">###############################################################################</span>
+
+<span class="w">    </span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    calculate_and_save_all_proportions</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="BasinData.calculate_and_save_all_proportions">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.basindata.BasinData.calculate_and_save_all_proportions">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate_and_save_all_proportions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;txt&#39;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">load</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span><span class="o">!=</span><span class="s1">&#39;Y&#39;</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">S_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+        
+        <span class="n">inicio</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="c1"># Calculating...</span>
+        <span class="n">combs</span><span class="p">,</span> <span class="n">Ps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calcule_all_props</span><span class="p">(</span><span class="n">solve_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver_option</span><span class="p">)</span>
+        
+        
+        <span class="n">fim</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Done! Time processing:&quot;</span><span class="p">,</span><span class="n">fim</span><span class="o">-</span><span class="n">inicio</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total combinations:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">combs</span><span class="p">),</span><span class="s1">&#39;, shape of proportions:&#39;</span><span class="p">,</span> <span class="n">Ps</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">inicio</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># Saving</span>
+        <span class="c1">#if self.output_folder==None:</span>
+        <span class="c1">#    self.output_folder = os.path.join(os.path.expanduser(&quot;~&quot;), &quot;pysasf_output&quot;)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">):</span>
+           <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
+           <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Folder &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="si">}</span><span class="s2">&#39; criated succesfully.&quot;</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">+</span><span class="n">key</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">combs_filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">+</span><span class="s1">&#39;_combs&#39;</span>      
+        <span class="bp">self</span><span class="o">.</span><span class="n">props_filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">+</span><span class="s1">&#39;_props&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feas_filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">+</span><span class="s1">&#39;_feas&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saving combinations indexes in:&#39;</span><span class="p">,</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">combs_filename</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="nb">format</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saving proportions calculated in:&#39;</span><span class="p">,</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">props_filename</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="nb">format</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_array_in_file</span><span class="p">(</span><span class="n">combs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">combs_filename</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_array_in_file</span><span class="p">(</span><span class="n">Ps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">props_filename</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+        <span class="c1">#self.feas = self.set_feasebles(Ps)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_feasebles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feas</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">feas_filename</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
+        <span class="n">fim</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Time for save files:&quot;</span><span class="p">,</span><span class="n">fim</span><span class="o">-</span><span class="n">inicio</span><span class="p">)</span>
+
+        
+        <span class="c1"># Loading if load option is choosed</span>
+        <span class="k">if</span> <span class="n">load</span><span class="p">:</span>
+            <span class="n">c_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">combs_filename</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="nb">format</span>
+            <span class="n">p_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">props_filename</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="nb">format</span>
+            <span class="n">c</span><span class="p">,</span><span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_combs_and_props_from_files</span><span class="p">(</span><span class="n">c_name</span><span class="p">,</span><span class="n">p_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">combs</span> <span class="o">=</span> <span class="n">c</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">p</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+
+
+
+
+    
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PySASF 0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pysasf.basindata</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Tiago Buriol.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

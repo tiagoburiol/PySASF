@@ -1,0 +1,215 @@
+
+
+<!doctype html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pysasf.solvers &#8212; PySASF 0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="../../_static/documentation_options.js?v=db78e746"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PySASF 0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pysasf.solvers</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pysasf.solvers</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on jul 2024</span>
+
+<span class="sd">@author: tiagoburiol</span>
+<span class="sd">@coworker: buligonl; josue@sehnem.com</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">To solve the overdetermined linear system of equations </span>
+<span class="sd">by least squares method</span>
+<span class="sd">&#39;&#39;&#39;</span>  
+<div class="viewcode-block" id="solve_gls_4x4">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.solvers.solve_gls_4x4">[docs]</a>
+<span class="k">def</span> <span class="nf">solve_gls_4x4</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">S_inv</span><span class="p">):</span>
+    <span class="c1">#print (X.shape) #7x3</span>
+    <span class="c1">#print(S_inv.shape) #7x7</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">S_inv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="c1">#7x3</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">S_inv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="c1">#7x1</span>
+    
+    <span class="n">AtA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">B</span><span class="p">)</span><span class="c1">#3x3</span>
+    <span class="n">yty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">C</span><span class="p">)</span><span class="c1">#3x1</span>
+    <span class="n">AtA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">AtA</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="mi">1</span><span class="p">))))</span>
+    <span class="n">AtA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">AtA</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">))))</span>
+    <span class="n">AtA</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">Aty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">yty</span><span class="p">,[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">AtA</span><span class="p">),</span><span class="n">Aty</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">P</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="solve_ols_cm">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.solvers.solve_ols_cm">[docs]</a>
+<span class="k">def</span> <span class="nf">solve_ols_cm</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">X</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="nd">@X</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">A</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">),</span><span class="mi">1</span><span class="p">))))</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">A</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">))))</span>
+    <span class="n">A</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)))</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Z</span><span class="p">,[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1">#print(A)</span>
+    <span class="c1">#print(Z)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="nd">@Z</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<span class="c1">## needs statmodel module</span>
+<span class="c1">## same results of solve_ols</span>
+<span class="c1">#def solve_ols_sm(y,X):</span>
+<span class="c1">#    X = np.divide(X,y.reshape(len(X),1))</span>
+<span class="c1">#    X = np.vstack([X, np.ones((1,X.shape[1]))])</span>
+<span class="c1">#    y = np.ones(len(X)) </span>
+<span class="c1">#    ols_model = sm.OLS(y, X).fit()</span>
+<span class="c1">#    return (ols_model.params)</span>
+
+
+<div class="viewcode-block" id="solve_ols">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.solvers.solve_ols">[docs]</a>
+<span class="k">def</span> <span class="nf">solve_ols</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">X</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">))</span> 
+    <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="nd">@X</span><span class="p">)</span><span class="o">@</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="nd">@y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">P</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="solve_minimize">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.solvers.solve_minimize">[docs]</a>
+<span class="k">def</span> <span class="nf">solve_minimize</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">A</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+        
+    <span class="c1">#A = np.array([d.T ,e.T, l.T]).T</span>
+    
+    <span class="n">P0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+    <span class="n">X0</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="mf">1.</span><span class="o">/</span><span class="n">P0</span><span class="p">)</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">P</span><span class="p">):</span>   
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(((</span><span class="n">y</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">P</span><span class="p">))</span><span class="o">/</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">con</span><span class="p">(</span><span class="n">P</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">P</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">-</span><span class="mf">1.0</span>
+       
+    <span class="n">cons</span> <span class="o">=</span> <span class="p">({</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;eq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="n">con</span><span class="p">})</span>
+    
+    <span class="n">S</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">X0</span><span class="p">,</span> 
+                 <span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;SLSQP&quot;</span><span class="p">,</span> 
+                 <span class="c1">#options={&#39;fatol&#39;: 0.0001},</span>
+                 <span class="n">constraints</span><span class="o">=</span><span class="n">cons</span><span class="p">)</span>
+    
+    <span class="n">P</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">S</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">P</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="solve_minimize2">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.solvers.solve_minimize2">[docs]</a>
+<span class="k">def</span> <span class="nf">solve_minimize2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">A</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span><span class="p">,</span> <span class="n">Bounds</span><span class="p">,</span> <span class="n">LinearConstraint</span>
+    <span class="c1">#https://docs.scipy.org/doc/scipy/tutorial/optimize.html#constrained-minimization-of-multivariate-scalar-functions-minimize</span>
+        
+    <span class="c1">#A =  np.array([d.T ,e.T, l.T]).T</span>
+    <span class="n">P0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+    <span class="c1">#X0 = -np.log((1./P0)-1.)</span>
+        
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">P</span><span class="p">):</span>   
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(((</span><span class="n">y</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">P</span><span class="p">))</span><span class="o">/</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    
+    <span class="n">lc</span> <span class="o">=</span> <span class="n">LinearConstraint</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">bnds</span> <span class="o">=</span> <span class="n">Bounds</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">S</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">P0</span><span class="p">,</span> 
+                 <span class="n">method</span><span class="o">=</span><span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> 
+                 <span class="c1">#jac=rosen_der, </span>
+                 <span class="c1">#hess=&#39;cs&#39;,</span>
+                 <span class="n">constraints</span><span class="o">=</span><span class="n">lc</span><span class="p">,</span>
+                 <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+                 <span class="n">bounds</span><span class="o">=</span><span class="n">bnds</span><span class="p">)</span>
+    
+    <span class="c1">#P = 1.0/(1.0+np.exp(-S.x))</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">x</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">P</span><span class="p">)</span></div>
+
+
+
+
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PySASF 0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pysasf.solvers</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Tiago Buriol.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,318 @@
+
+
+<!doctype html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pysasf.clarkeminella &#8212; PySASF 0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="../../_static/documentation_options.js?v=db78e746"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PySASF 0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pysasf.clarkeminella</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pysasf.clarkeminella</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on jul 2024</span>
+
+<span class="sd">@author: tiagoburiol</span>
+<span class="sd">@coworker: buligonl; josue@sehnem.com</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">clear_output</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">ConvexHull</span>
+<span class="kn">import</span> <span class="nn">concurrent.futures</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+<span class="c1">#PySASF imports</span>
+<span class="kn">from</span> <span class="nn">pysasf</span> <span class="kn">import</span> <span class="n">solvers</span>
+<span class="kn">from</span> <span class="nn">pysasf</span> <span class="kn">import</span> <span class="n">stats</span>
+
+
+<span class="c1">#def confidence_region(P, p = 95, space_dist=&#39;mahalanobis0&#39;):</span>
+<span class="c1">#    d = space_dist</span>
+<span class="c1">#    return stats.confidence_region(P, p = 95, space_dist=d)</span>
+    
+<span class="c1">#def cm_feasebles(Ps):</span>
+<span class="c1">#    Ps_feas = Ps[[np.all(P&gt;0) for P in Ps]]</span>
+<span class="c1">#    return np.array(Ps_feas)</span>
+
+<span class="c1">#########################################################################################3</span>
+
+
+<div class="viewcode-block" id="run_repetitions_and_reduction">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.clarkeminella.run_repetitions_and_reduction">[docs]</a>
+<span class="k">def</span> <span class="nf">run_repetitions_and_reduction</span> <span class="p">(</span><span class="n">bd</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">reductions</span><span class="p">,</span> <span class="n">percents</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                                   <span class="n">repetitions</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="n">inicio</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">cv</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span><span class="mi">100</span>
+    <span class="n">CVs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">areas_medias</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">bd</span><span class="o">.</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    
+    <span class="c1"># create the columns names for return dataframe</span>
+    <span class="n">df_out_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;nSamp&#39;</span><span class="p">,</span><span class="s1">&#39;CV&#39;</span><span class="p">,</span><span class="s1">&#39;Mean&#39;</span><span class="p">,</span><span class="s1">&#39;Std&#39;</span><span class="p">,</span> <span class="s1">&#39;Total&#39;</span><span class="p">,</span> <span class="s1">&#39;Feas&#39;</span><span class="p">]</span>
+    <span class="n">nSources</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bd</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nSources</span><span class="p">):</span>
+        <span class="n">df_out_cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;MeanP&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">df_out_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+    <span class="c1"># apenas para calcular o numero total de Ps (Melhorar isso)</span>
+    <span class="n">prod</span> <span class="o">=</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">bd</span><span class="o">.</span><span class="n">sources</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">k</span><span class="o">!=</span><span class="n">key</span><span class="p">:</span>
+            <span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">bd</span><span class="o">.</span><span class="n">df_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+
+    <span class="c1">#calcula as reduções com base nos percentuais</span>
+    <span class="k">if</span> <span class="n">percents</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">percents_reductions</span> <span class="o">=</span> <span class="n">reductions</span> 
+        <span class="n">ssize</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bd</span><span class="o">.</span><span class="n">df_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="n">percent</span> <span class="o">=</span> <span class="n">ssize</span><span class="o">/</span><span class="mi">100</span>
+        <span class="n">reductions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">percent</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">reductions</span><span class="p">))</span>
+        <span class="n">reductions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">reductions</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Number of samples:&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">reductions</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">compute_area</span><span class="p">(</span><span class="n">pts</span><span class="p">):</span>
+        <span class="n">hull</span> <span class="o">=</span> <span class="n">ConvexHull</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+        <span class="n">area</span> <span class="o">=</span> <span class="n">hull</span><span class="o">.</span><span class="n">volume</span> <span class="c1"># area for 2d points</span>
+        <span class="k">return</span> <span class="n">area</span>
+    
+    
+    <span class="c1">#AQUI ACONTECEM AS REDUÇÕES</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">reductions</span><span class="p">:</span>
+        <span class="c1">#Total=prod*n</span>
+        <span class="n">points_set</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">areas</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">repetitions</span><span class="p">):</span>
+            <span class="c1"># apenas para imprimir o texto</span>
+            <span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="p">:</span>
+                <span class="c1">#clear_output(wait=True)</span>
+                <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;Processing for&#39;</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="s1">&#39;subsamples of&#39;</span><span class="p">,</span><span class="n">key</span><span class="p">,</span> 
+                   <span class="s1">&#39;, repetition number&#39;</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">t1</span><span class="o">=</span><span class="n">t2</span>
+
+            
+            <span class="c1">#_,Ptot = stats.randon_props_subsamples(bd, key, n, only_feasebles=False)</span>
+            <span class="c1">#Pfea =  cm.cm_feasebles(Ptot[:,0:2])</span>
+            <span class="n">_</span><span class="p">,</span><span class="n">Pfea</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">randon_props_subsamples</span><span class="p">(</span><span class="n">bd</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> 
+                                                   <span class="n">only_feasebles</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
+
+            
+            <span class="k">if</span> <span class="n">Pfea</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;=</span><span class="mi">4</span><span class="p">:</span>
+                <span class="n">Pcr</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">confidence_region</span><span class="p">(</span><span class="n">Pfea</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">p</span> <span class="o">=</span> <span class="mi">95</span><span class="p">)</span>
+                <span class="c1">#&lt;&lt;-------------------------------</span>
+                <span class="c1">#hull = ConvexHull(Pcr[:,0:2])    #Aqui</span>
+                <span class="c1">#areas.append(hull.volume)</span>
+                <span class="c1">#&gt;&gt;-------------------------------</span>
+                <span class="n">points_set</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Pcr</span><span class="p">)</span>
+                <span class="c1">#-------------------------------</span>
+       
+        <span class="c1">#Aqui: otimização/paralelização</span>
+        <span class="c1">#&gt;&gt;-------------------------------</span>
+        <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">()</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+             <span class="n">areas</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">executor</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">compute_area</span><span class="p">,</span> <span class="n">points_set</span><span class="p">))</span> 
+        <span class="c1">#-------------------------------</span>
+
+        
+        <span class="c1"># insert data for df_out</span>
+        <span class="k">if</span> <span class="n">percents</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">reductions</span> <span class="o">==</span> <span class="n">n</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1">#print(&#39;IDX&#39;,idx)</span>
+            <span class="n">nSamp</span> <span class="o">=</span> <span class="n">percents_reductions</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nSamp</span> <span class="o">=</span> <span class="n">n</span>
+            
+        <span class="n">CV</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">cv</span><span class="p">(</span><span class="n">areas</span><span class="p">),</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">Mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">areas</span><span class="p">),</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">Std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">areas</span><span class="p">),</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">Total</span><span class="o">=</span><span class="n">prod</span><span class="o">*</span><span class="n">n</span>
+        <span class="n">Feas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Pfea</span><span class="p">)</span>
+        <span class="n">df_out_data_n</span> <span class="o">=</span> <span class="p">[</span><span class="n">nSamp</span><span class="p">,</span><span class="n">CV</span><span class="p">,</span><span class="n">Mean</span><span class="p">,</span><span class="n">Std</span><span class="p">,</span><span class="n">Total</span><span class="p">,</span><span class="n">Feas</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nSources</span><span class="p">):</span>
+            <span class="n">df_out_data_n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Pfea</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">df_out_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_out_data_n</span><span class="p">)</span>
+        <span class="n">bd</span><span class="o">.</span><span class="n">cm_df</span> <span class="o">=</span> <span class="n">df_out_data</span>
+
+        <span class="n">CVs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cv</span><span class="p">(</span><span class="n">areas</span><span class="p">))</span>
+        <span class="n">areas_medias</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">areas</span><span class="p">))</span>
+
+    <span class="c1"># Clean the terminal and print some infos</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
+    <span class="n">clear_output</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fim</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Time for all runs:&quot;</span><span class="p">,</span><span class="n">fim</span><span class="o">-</span><span class="n">inicio</span><span class="p">)</span>
+
+    <span class="c1"># create return dataframe</span>
+    <span class="n">df_out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df_out_data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">df_out_cols</span><span class="p">)</span>
+    <span class="n">bd</span><span class="o">.</span><span class="n">cm_df</span> <span class="o">=</span> <span class="n">df_out</span>
+
+    <span class="c1"># Saving file in cvs</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;Saving in&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">+</span><span class="s1">&#39;.csv&#39;</span><span class="p">)</span>
+    <span class="n">df_out</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">bd</span><span class="o">.</span><span class="n">output_folder</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;.csv&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">df_out</span><span class="p">)</span></div>
+
+<span class="c1">###########################################################################################3</span>
+
+
+
+<span class="c1">#&#39;&#39;&#39;</span>
+<span class="c1">#Esta função processa o cálculo das porcentagens usando as médias</span>
+<span class="c1">#Faz as contas usando reps repetições tomando aletoriamente um conjunto</span>
+<span class="c1">#de subamostras com tamanhos definidos por n_list. Tem opção de plotar. </span>
+<span class="c1">#&#39;&#39;&#39;</span>
+
+<span class="c1">#def random_subsamples(bd,nlist):</span>
+<span class="c1">#    df_dict = bd.df_dict</span>
+<span class="c1">#    ss_dict = {}</span>
+<span class="c1">#    for i, key in enumerate(df_dict.keys()):</span>
+<span class="c1">#        data = df_dict[key].values.astype(float)</span>
+<span class="c1">#        ss_dict[key]=data[np.random.choice(len(data), nlist[i], replace=False)]</span>
+<span class="c1">#    return ss_dict</span>
+    
+<span class="c1">#&#39;&#39;&#39;</span>
+<span class="c1">#&#39;&#39;&#39;</span>
+<span class="c1">#def get_props_from_subsamples_means(bd,reps,n_list, plot=True):</span>
+<span class="c1">#    df_dict = bd.df_dict</span>
+<span class="c1">#    Y = bd.df_dict[&#39;Y&#39;].values.astype(float)</span>
+<span class="c1">#    S_inv = np.linalg.inv(np.cov(Y.T))</span>
+<span class="c1">#    </span>
+<span class="c1">#    if len(df_dict.keys())!=len(n_list):</span>
+<span class="c1">#        print(&quot;The n_list needs to be of the same size of lands data.&quot;)</span>
+<span class="c1">#    else:</span>
+<span class="c1">#        Ps = []</span>
+<span class="c1">#        for i in range(reps):</span>
+<span class="c1">#            ss_dict = random_subsamples(bd,n_list)</span>
+<span class="c1">#            X = []</span>
+<span class="c1">#            for key in bd.sources:</span>
+<span class="c1">#                X.append(ss_dict[key].mean(axis=0))</span>
+<span class="c1">#            X = np.array(X).T</span>
+<span class="c1">#            y = ss_dict[&#39;Y&#39;].mean(axis=0)</span>
+<span class="c1">#            P = solvers.solve_gls_4x4(y,X,S_inv)</span>
+<span class="c1">#            #print(P)</span>
+<span class="c1">#            if np.all(np.array(P[0:3])&gt;=0):</span>
+<span class="c1">#                #print (P[0:3], &#39;soma:&#39;, np.sum(P[0:3]))    </span>
+<span class="c1">#                Ps.append(list(P))</span>
+<span class="c1">#        Ps = np.array(Ps)</span>
+<span class="c1">#        if plot:</span>
+<span class="c1">#            plt.plot(Ps[:,0],Ps[:,1],&#39;.&#39;)</span>
+<span class="c1">#            plt.xlabel(&quot;P1&quot;)</span>
+<span class="c1">#            plt.ylabel(&quot;P2&quot;)</span>
+<span class="c1">#            plt.xlim((0,1))</span>
+<span class="c1">#            plt.ylim((0,1))</span>
+<span class="c1">#            plt.plot(Ps[:,0],Ps[:,1],&#39;.&#39;)</span>
+<span class="c1">#            plt.show()</span>
+<span class="c1">#        return(Ps)</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PySASF 0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pysasf.clarkeminella</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Tiago Buriol.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

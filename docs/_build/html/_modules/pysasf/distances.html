@@ -1,0 +1,162 @@
+
+
+<!doctype html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pysasf.distances &#8212; PySASF 0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="../../_static/documentation_options.js?v=db78e746"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PySASF 0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pysasf.distances</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pysasf.distances</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on jul 2024</span>
+
+<span class="sd">@author: tiagoburiol</span>
+<span class="sd">@coworker: buligonl; josue@sehnem.com</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">distance</span>
+
+
+<div class="viewcode-block" id="mahalanobis_dist">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.distances.mahalanobis_dist">[docs]</a>
+<span class="k">def</span> <span class="nf">mahalanobis_dist</span><span class="p">(</span><span class="n">P_arr</span><span class="p">,</span> <span class="n">P0</span><span class="p">):</span>
+    <span class="n">S_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">P_arr</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">P_arr</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">mahalanobis</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">P0</span><span class="p">,</span> <span class="n">S_inv</span><span class="p">)</span>       
+        <span class="n">dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="euclidean_dist">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.distances.euclidean_dist">[docs]</a>
+<span class="k">def</span> <span class="nf">euclidean_dist</span><span class="p">(</span><span class="n">P_arr</span><span class="p">,</span> <span class="n">P0</span><span class="p">):</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">P_arr</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
+       <span class="n">d</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">euclidean</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">P0</span><span class="p">)</span>
+       <span class="n">dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span></div>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd"># Same result of mahalanobis from scipy</span>
+<span class="sd">def mahalanobis0_dist(P_arr, Pm):</span>
+<span class="sd">    #print(P_arr.shape)</span>
+<span class="sd">    #Pm = np.mean(P_arr, axis=0)</span>
+<span class="sd">    #print(Pm)</span>
+<span class="sd">    vect = np.full((len(P_arr),P_arr.shape[1]),Pm)-P_arr</span>
+<span class="sd">    S = np.cov(P_arr.T)</span>
+<span class="sd">    dist = []</span>
+<span class="sd">    for v in vect:</span>
+<span class="sd">        d = np.dot(np.dot(v.T, np.linalg.inv(S)), v)</span>
+<span class="sd">        dist.append(d)</span>
+<span class="sd">    dist = np.array(dist)</span>
+<span class="sd">    return dist</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="mahalanobis2d_dist">
+<a class="viewcode-back" href="../../pysasf.html#pysasf.distances.mahalanobis2d_dist">[docs]</a>
+<span class="k">def</span> <span class="nf">mahalanobis2d_dist</span><span class="p">(</span><span class="n">P_arr</span><span class="p">,</span> <span class="n">P0</span><span class="p">):</span>
+    <span class="n">P_arr</span> <span class="o">=</span> <span class="n">P_arr</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">vect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">P_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">P0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">P_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">P0</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span> 
+    <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">P_arr</span><span class="p">)</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vect</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">S</span><span class="p">)),</span> <span class="n">v</span><span class="p">)</span>
+        <span class="n">dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="c1"># distâncias</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dist</span></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PySASF 0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pysasf.distances</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Tiago Buriol.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

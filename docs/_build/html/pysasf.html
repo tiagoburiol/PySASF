@@ -1,0 +1,450 @@
+
+
+<!doctype html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pysasf package &#8212; PySASF 0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="_static/documentation_options.js?v=db78e746"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="pysasf" href="modules.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="pysasf"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PySASF 0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">pysasf</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pysasf package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="pysasf-package">
+<h1>pysasf package<a class="headerlink" href="#pysasf-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-pysasf.basindata">
+<span id="pysasf-basindata-module"></span><h2>pysasf.basindata module<a class="headerlink" href="#module-pysasf.basindata" title="Link to this heading">¶</a></h2>
+<p>Created on jul 2024</p>
+<p>&#64;author: tiagoburiol
+&#64;coworker: buligonl; <a class="reference external" href="mailto:josue&#37;&#52;&#48;sehnem&#46;com">josue<span>&#64;</span>sehnem<span>&#46;</span>com</a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pysasf.basindata.BasinData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysasf.basindata.</span></span><span class="sig-name descname"><span class="pre">BasinData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/basindata.html#BasinData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.basindata.BasinData" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to store and process a basin sediments dataset.</p>
+<section id="attributes">
+<h3>Attributes:<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>df_dict: str</dt><dd><p>Dictionary of Pandas dataframes for store sources and suspended sediments data.</p>
+</dd>
+<dt>tracers: str list</dt><dd><p>List of tracer names.</p>
+</dd>
+<dt>sources: str list</dt><dd><p>List of sediment sources names.</p>
+</dd>
+<dt>combs: numpy.array</dt><dd><p>Array of indexes (int) for all possible combinations of data samples.</p>
+</dd>
+<dt>props: numpy.array</dt><dd><p>Array of all proportions solutions for all combinations (combs) of data samples.</p>
+</dd>
+<dt>feas: boolean list</dt><dd><p>List of feaseble propportions (‘props[feas]’ return only feasebles).</p>
+</dd>
+<dt>solver_option = srt</dt><dd><p>Solver options (‘ols’ or ‘gls’) to calculate the proportions. Default is ‘ols’.</p>
+</dd>
+<dt>cm_df: pandas DataFrame</dt><dd><p>The dataframe containing the results from clarkeminella analysis scheme.</p>
+</dd>
+</dl>
+</section>
+<section id="methods">
+<h3>Methods:<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>infos():</dt><dd><p>Returns a dataframe whith basic dataset infos (names, sources and sample sizes).</p>
+</dd>
+<dt>means():</dt><dd><p>Returns a dataframe whith means of dataset.</p>
+</dd>
+<dt>std():</dt><dd><p>Returns a dataframe whith std of dataset.</p>
+</dd>
+<dt>set_solver_option(opt):</dt><dd><p>To set the solver option for overdeterminated system. Options are ‘ols’(default) and ‘gls’.</p>
+</dd>
+<dt>set_output_folder(path):</dt><dd><p>Set the output folder (str) to save files.</p>
+</dd>
+<dt>load_combs_and_props_from_files(fc,fp):</dt><dd><p>Function to load the combinations and the proportions saved files.</p>
+</dd>
+</dl>
+</section>
+<section id="internal-methods">
+<h3>Internal Methods:<a class="headerlink" href="#internal-methods" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>_save_array_in_file(self,array,output_folder,filename,fileformat,numberformat):</dt><dd><p>Used to save a array in a output file.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pysasf.basindata.BasinData.calculate_and_save_all_proportions">
+<span class="sig-name descname"><span class="pre">calculate_and_save_all_proportions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'txt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/basindata.html#BasinData.calculate_and_save_all_proportions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.basindata.BasinData.calculate_and_save_all_proportions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysasf.basindata.BasinData.calcule_all_props">
+<span class="sig-name descname"><span class="pre">calcule_all_props</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solve_opt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ols'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/basindata.html#BasinData.calcule_all_props"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.basindata.BasinData.calcule_all_props" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysasf.basindata.BasinData.get_feasebles">
+<span class="sig-name descname"><span class="pre">get_feasebles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/basindata.html#BasinData.get_feasebles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.basindata.BasinData.get_feasebles" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysasf.basindata.BasinData.infos">
+<span class="sig-name descname"><span class="pre">infos</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/basindata.html#BasinData.infos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.basindata.BasinData.infos" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysasf.basindata.BasinData.load_combs_and_props_from_files">
+<span class="sig-name descname"><span class="pre">load_combs_and_props_from_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/basindata.html#BasinData.load_combs_and_props_from_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.basindata.BasinData.load_combs_and_props_from_files" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysasf.basindata.BasinData.load_feasebles_from_file">
+<span class="sig-name descname"><span class="pre">load_feasebles_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/basindata.html#BasinData.load_feasebles_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.basindata.BasinData.load_feasebles_from_file" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysasf.basindata.BasinData.means">
+<span class="sig-name descname"><span class="pre">means</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/basindata.html#BasinData.means"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.basindata.BasinData.means" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysasf.basindata.BasinData.set_feasebles">
+<span class="sig-name descname"><span class="pre">set_feasebles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/basindata.html#BasinData.set_feasebles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.basindata.BasinData.set_feasebles" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysasf.basindata.BasinData.set_output_folder">
+<span class="sig-name descname"><span class="pre">set_output_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/basindata.html#BasinData.set_output_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.basindata.BasinData.set_output_folder" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysasf.basindata.BasinData.set_solver_option">
+<span class="sig-name descname"><span class="pre">set_solver_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver_option</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/basindata.html#BasinData.set_solver_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.basindata.BasinData.set_solver_option" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysasf.basindata.BasinData.std">
+<span class="sig-name descname"><span class="pre">std</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/basindata.html#BasinData.std"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.basindata.BasinData.std" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+<section id="module-pysasf.clarkeminella">
+<span id="pysasf-clarkeminella-module"></span><h2>pysasf.clarkeminella module<a class="headerlink" href="#module-pysasf.clarkeminella" title="Link to this heading">¶</a></h2>
+<p>Created on jul 2024</p>
+<p>&#64;author: tiagoburiol
+&#64;coworker: buligonl; <a class="reference external" href="mailto:josue&#37;&#52;&#48;sehnem&#46;com">josue<span>&#64;</span>sehnem<span>&#46;</span>com</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.clarkeminella.run_repetitions_and_reduction">
+<span class="sig-prename descclassname"><span class="pre">pysasf.clarkeminella.</span></span><span class="sig-name descname"><span class="pre">run_repetitions_and_reduction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repetitions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/clarkeminella.html#run_repetitions_and_reduction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.clarkeminella.run_repetitions_and_reduction" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pysasf.distances">
+<span id="pysasf-distances-module"></span><h2>pysasf.distances module<a class="headerlink" href="#module-pysasf.distances" title="Link to this heading">¶</a></h2>
+<p>Created on jul 2024</p>
+<p>&#64;author: tiagoburiol
+&#64;coworker: buligonl; <a class="reference external" href="mailto:josue&#37;&#52;&#48;sehnem&#46;com">josue<span>&#64;</span>sehnem<span>&#46;</span>com</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.distances.euclidean_dist">
+<span class="sig-prename descclassname"><span class="pre">pysasf.distances.</span></span><span class="sig-name descname"><span class="pre">euclidean_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/distances.html#euclidean_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.distances.euclidean_dist" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.distances.mahalanobis2d_dist">
+<span class="sig-prename descclassname"><span class="pre">pysasf.distances.</span></span><span class="sig-name descname"><span class="pre">mahalanobis2d_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/distances.html#mahalanobis2d_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.distances.mahalanobis2d_dist" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.distances.mahalanobis_dist">
+<span class="sig-prename descclassname"><span class="pre">pysasf.distances.</span></span><span class="sig-name descname"><span class="pre">mahalanobis_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/distances.html#mahalanobis_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.distances.mahalanobis_dist" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pysasf.plots">
+<span id="pysasf-plots-module"></span><h2>pysasf.plots module<a class="headerlink" href="#module-pysasf.plots" title="Link to this heading">¶</a></h2>
+<p>Created on jul 2024</p>
+<p>&#64;author: tiagoburiol
+&#64;coworker: buligonl; <a class="reference external" href="mailto:josue&#37;&#52;&#48;sehnem&#46;com">josue<span>&#64;</span>sehnem<span>&#46;</span>com</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.plots.data_histo">
+<span class="sig-prename descclassname"><span class="pre">pysasf.plots.</span></span><span class="sig-name descname"><span class="pre">data_histo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/plots.html#data_histo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.plots.data_histo" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.plots.draw_hull">
+<span class="sig-prename descclassname"><span class="pre">pysasf.plots.</span></span><span class="sig-name descname"><span class="pre">draw_hull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savefig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Convexhull'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'convex_hull'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileformat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'png'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/plots.html#draw_hull"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.plots.draw_hull" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.plots.plot_cm_outputs">
+<span class="sig-prename descclassname"><span class="pre">pysasf.plots.</span></span><span class="sig-name descname"><span class="pre">plot_cm_outputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_of_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savefig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'../output'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/plots.html#plot_cm_outputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.plots.plot_cm_outputs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.plots.props_histo">
+<span class="sig-prename descclassname"><span class="pre">pysasf.plots.</span></span><span class="sig-name descname"><span class="pre">props_histo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/plots.html#props_histo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.plots.props_histo" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pysasf.readers">
+<span id="pysasf-readers-module"></span><h2>pysasf.readers module<a class="headerlink" href="#module-pysasf.readers" title="Link to this heading">¶</a></h2>
+<p>Created on jul 2024</p>
+<p>&#64;author: tiagoburiol
+&#64;coworker: buligonl; <a class="reference external" href="mailto:josue&#37;&#52;&#48;sehnem&#46;com">josue<span>&#64;</span>sehnem<span>&#46;</span>com</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.readers.read_datafile">
+<span class="sig-prename descclassname"><span class="pre">pysasf.readers.</span></span><span class="sig-name descname"><span class="pre">read_datafile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/readers.html#read_datafile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.readers.read_datafile" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pysasf.solvers">
+<span id="pysasf-solvers-module"></span><h2>pysasf.solvers module<a class="headerlink" href="#module-pysasf.solvers" title="Link to this heading">¶</a></h2>
+<p>Created on jul 2024</p>
+<p>&#64;author: tiagoburiol
+&#64;coworker: buligonl; <a class="reference external" href="mailto:josue&#37;&#52;&#48;sehnem&#46;com">josue<span>&#64;</span>sehnem<span>&#46;</span>com</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.solvers.solve_gls_4x4">
+<span class="sig-prename descclassname"><span class="pre">pysasf.solvers.</span></span><span class="sig-name descname"><span class="pre">solve_gls_4x4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S_inv</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/solvers.html#solve_gls_4x4"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.solvers.solve_gls_4x4" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.solvers.solve_minimize">
+<span class="sig-prename descclassname"><span class="pre">pysasf.solvers.</span></span><span class="sig-name descname"><span class="pre">solve_minimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/solvers.html#solve_minimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.solvers.solve_minimize" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.solvers.solve_minimize2">
+<span class="sig-prename descclassname"><span class="pre">pysasf.solvers.</span></span><span class="sig-name descname"><span class="pre">solve_minimize2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/solvers.html#solve_minimize2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.solvers.solve_minimize2" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.solvers.solve_ols">
+<span class="sig-prename descclassname"><span class="pre">pysasf.solvers.</span></span><span class="sig-name descname"><span class="pre">solve_ols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/solvers.html#solve_ols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.solvers.solve_ols" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.solvers.solve_ols_cm">
+<span class="sig-prename descclassname"><span class="pre">pysasf.solvers.</span></span><span class="sig-name descname"><span class="pre">solve_ols_cm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/solvers.html#solve_ols_cm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.solvers.solve_ols_cm" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pysasf.stats">
+<span id="pysasf-stats-module"></span><h2>pysasf.stats module<a class="headerlink" href="#module-pysasf.stats" title="Link to this heading">¶</a></h2>
+<p>Created on jul 2024</p>
+<p>&#64;author: tiagoburiol
+&#64;coworker: buligonl; <a class="reference external" href="mailto:josue&#37;&#52;&#48;sehnem&#46;com">josue<span>&#64;</span>sehnem<span>&#46;</span>com</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.stats.confidence_region">
+<span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">confidence_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">space_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mahalanobis'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#confidence_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.confidence_region" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.stats.infos">
+<span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">infos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#infos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.infos" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.stats.means">
+<span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">means</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#means"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.means" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.stats.random_props_subset">
+<span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">random_props_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#random_props_subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.random_props_subset" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.stats.random_subsamples">
+<span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">random_subsamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlist</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#random_subsamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.random_subsamples" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.stats.randon_props_subsamples">
+<span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">randon_props_subsamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_feasebles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#randon_props_subsamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.randon_props_subsamples" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.stats.std">
+<span class="sig-prename descclassname"><span class="pre">pysasf.stats.</span></span><span class="sig-name descname"><span class="pre">std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/stats.html#std"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.stats.std" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pysasf.utils">
+<span id="pysasf-utils-module"></span><h2>pysasf.utils module<a class="headerlink" href="#module-pysasf.utils" title="Link to this heading">¶</a></h2>
+<p>Created on jul 2024</p>
+<p>&#64;author: tiagoburiol
+&#64;coworker: buligonl; <a class="reference external" href="mailto:josue&#37;&#52;&#48;sehnem&#46;com">josue<span>&#64;</span>sehnem<span>&#46;</span>com</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pysasf.utils.minmax_scale">
+<span class="sig-prename descclassname"><span class="pre">pysasf.utils.</span></span><span class="sig-name descname"><span class="pre">minmax_scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysasf/utils.html#minmax_scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pysasf.utils.minmax_scale" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pysasf">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pysasf" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">pysasf package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pysasf.basindata">pysasf.basindata module</a><ul>
+<li><a class="reference internal" href="#pysasf.basindata.BasinData"><code class="docutils literal notranslate"><span class="pre">BasinData</span></code></a><ul>
+<li><a class="reference internal" href="#pysasf.basindata.BasinData.calculate_and_save_all_proportions"><code class="docutils literal notranslate"><span class="pre">BasinData.calculate_and_save_all_proportions()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.basindata.BasinData.calcule_all_props"><code class="docutils literal notranslate"><span class="pre">BasinData.calcule_all_props()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.basindata.BasinData.get_feasebles"><code class="docutils literal notranslate"><span class="pre">BasinData.get_feasebles()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.basindata.BasinData.infos"><code class="docutils literal notranslate"><span class="pre">BasinData.infos()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.basindata.BasinData.load_combs_and_props_from_files"><code class="docutils literal notranslate"><span class="pre">BasinData.load_combs_and_props_from_files()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.basindata.BasinData.load_feasebles_from_file"><code class="docutils literal notranslate"><span class="pre">BasinData.load_feasebles_from_file()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.basindata.BasinData.means"><code class="docutils literal notranslate"><span class="pre">BasinData.means()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.basindata.BasinData.set_feasebles"><code class="docutils literal notranslate"><span class="pre">BasinData.set_feasebles()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.basindata.BasinData.set_output_folder"><code class="docutils literal notranslate"><span class="pre">BasinData.set_output_folder()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.basindata.BasinData.set_solver_option"><code class="docutils literal notranslate"><span class="pre">BasinData.set_solver_option()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.basindata.BasinData.std"><code class="docutils literal notranslate"><span class="pre">BasinData.std()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pysasf.clarkeminella">pysasf.clarkeminella module</a><ul>
+<li><a class="reference internal" href="#pysasf.clarkeminella.run_repetitions_and_reduction"><code class="docutils literal notranslate"><span class="pre">run_repetitions_and_reduction()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pysasf.distances">pysasf.distances module</a><ul>
+<li><a class="reference internal" href="#pysasf.distances.euclidean_dist"><code class="docutils literal notranslate"><span class="pre">euclidean_dist()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.distances.mahalanobis2d_dist"><code class="docutils literal notranslate"><span class="pre">mahalanobis2d_dist()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.distances.mahalanobis_dist"><code class="docutils literal notranslate"><span class="pre">mahalanobis_dist()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pysasf.plots">pysasf.plots module</a><ul>
+<li><a class="reference internal" href="#pysasf.plots.data_histo"><code class="docutils literal notranslate"><span class="pre">data_histo()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.plots.draw_hull"><code class="docutils literal notranslate"><span class="pre">draw_hull()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.plots.plot_cm_outputs"><code class="docutils literal notranslate"><span class="pre">plot_cm_outputs()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.plots.props_histo"><code class="docutils literal notranslate"><span class="pre">props_histo()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pysasf.readers">pysasf.readers module</a><ul>
+<li><a class="reference internal" href="#pysasf.readers.read_datafile"><code class="docutils literal notranslate"><span class="pre">read_datafile()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pysasf.solvers">pysasf.solvers module</a><ul>
+<li><a class="reference internal" href="#pysasf.solvers.solve_gls_4x4"><code class="docutils literal notranslate"><span class="pre">solve_gls_4x4()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.solvers.solve_minimize"><code class="docutils literal notranslate"><span class="pre">solve_minimize()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.solvers.solve_minimize2"><code class="docutils literal notranslate"><span class="pre">solve_minimize2()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.solvers.solve_ols"><code class="docutils literal notranslate"><span class="pre">solve_ols()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.solvers.solve_ols_cm"><code class="docutils literal notranslate"><span class="pre">solve_ols_cm()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pysasf.stats">pysasf.stats module</a><ul>
+<li><a class="reference internal" href="#pysasf.stats.confidence_region"><code class="docutils literal notranslate"><span class="pre">confidence_region()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.stats.infos"><code class="docutils literal notranslate"><span class="pre">infos()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.stats.means"><code class="docutils literal notranslate"><span class="pre">means()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.stats.random_props_subset"><code class="docutils literal notranslate"><span class="pre">random_props_subset()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.stats.random_subsamples"><code class="docutils literal notranslate"><span class="pre">random_subsamples()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.stats.randon_props_subsamples"><code class="docutils literal notranslate"><span class="pre">randon_props_subsamples()</span></code></a></li>
+<li><a class="reference internal" href="#pysasf.stats.std"><code class="docutils literal notranslate"><span class="pre">std()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pysasf.utils">pysasf.utils module</a><ul>
+<li><a class="reference internal" href="#pysasf.utils.minmax_scale"><code class="docutils literal notranslate"><span class="pre">minmax_scale()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pysasf">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="modules.html"
+                          title="previous chapter">pysasf</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pysasf.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="pysasf"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PySASF 0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >pysasf</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pysasf package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Tiago Buriol.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>
