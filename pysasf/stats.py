@@ -15,6 +15,36 @@ from pysasf import distances
 Just get basic infos and print
 '''
 def infos(bd):
+    """
+    Generate a DataFrame containing the sample sizes for each key in the input object.
+
+    This function iterates through the dictionary of DataFrames contained in the
+    `bd` object and creates a summary DataFrame that lists the number of samples
+    (rows) for each DataFrame associated with the keys in `bd.df_dict`. The resulting
+    DataFrame has the keys as index and the sample sizes as values.
+
+    Parameters
+    ----------
+    bd : object
+        An object that contains a dictionary of DataFrames in the attribute `df_dict`
+        and a list of tracer names in the attribute `tracers`.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame where the index represents the keys from `bd.df_dict` and the
+        values represent the sample sizes (number of rows) for each corresponding DataFrame.
+
+    Raises
+    ------
+    AttributeError
+        If `bd` does not have the attributes `df_dict` or `tracers`.
+
+    Notes
+    -----
+    #TODO: Need to provide more comments for these!
+
+    """
     info = pd.DataFrame()
     for key in list(bd.df_dict):
         size = bd.df_dict[key].shape[0]
@@ -27,6 +57,25 @@ def infos(bd):
     return(info)
 
 def means(bd):
+    '''
+    Calculates the mean values for each column in the dataframes stored in the bd.df_dict dictionary
+    (average) value of each element in each source.
+
+    Parameters
+    --------------------
+    bd : object
+        An instance of a BasinData class Basin. Contains a dictionary of dataframes, bd.df_dict.
+
+    Returns
+    --------------------
+    means : pandas.DataFrame
+        A dataframe containing the mean values for each column in the dataframes stored in bd.df_dict
+        (average value of each element in each source -- average of the element value of all samples from the same source).
+
+    Raises
+    --------------------
+    None
+    '''
     means = pd.DataFrame()
     for key in list(bd.df_dict):
         df_mean = bd.df_dict[key].mean(axis=0).to_frame().transpose()
@@ -38,6 +87,23 @@ def means(bd):
 
            
 def std(bd):
+    '''
+    Calculates the standard deviation values for each column in the dataframes stored in the bd.df_dict dictionary.
+
+    Parameters
+    --------------------
+    bd : object
+        An instance of a BasinData class Basin. Contains a dictionary of dataframes, bd.df_dict.
+
+    Returns
+    --------------------
+    std : pandas.DataFrame
+        A dataframe containing the standard deviation values for each column in the dataframes stored in bd.df_dict.
+
+    Raises
+    --------------------
+    None
+    '''
     std = pd.DataFrame()
     for key in list(bd.df_dict):
         df_std = bd.df_dict[key].std(axis=0).to_frame().transpose()
@@ -49,6 +115,31 @@ def std(bd):
 
 
 def randon_props_subsamples(bd, key, n, only_feasebles=False, target=None):
+    '''
+    Selects a random subsample of n rows from the dataframe stored in bd.df_dict[key], and returns the corresponding rows from the bd.combs and bd.props arrays.
+
+    Parameters
+    --------------------
+    bd : object
+        An instance of a class that contains a dictionary of dataframes (bd.df_dict), a combinations array (bd.combs), and a properties array (bd.props).
+    key : str
+        The key corresponding to the dataframe in bd.df_dict from which the subsample will be selected.
+    n : int
+        The number of rows to select in the subsample.
+    only_feasibles : bool, optional
+        If True, only selects rows that are feasible (i.e., where bd.feas is True).Defaults to False.
+
+    Returns
+    --------------------
+    selected_combs : numpy.ndarray
+        A 2D numpy array containing the rows from bd.combs that correspond to the selected subsample.
+    selected_Ps : numpy.ndarray
+        A 1D numpy array containing the rows from bd.props that correspond to the selected subsample.
+
+    Raises
+    --------------------
+    None
+    '''
     Ps = bd.props
     combs = bd.combs
     key_idx = list(bd.df_dict.keys()).index(key)
@@ -74,9 +165,30 @@ def randon_props_subsamples(bd, key, n, only_feasebles=False, target=None):
     return selected_combs, selected_Ps
 
 '''
-Calculate de confidence region
+Calculate the confidence region
 '''    
 def confidence_region(P, p = 95, space_dist='mahalanobis'):
+    '''
+    Calculates the confidence region for the given set of points P, based on the specified confidence level
+    (default is 95%) and distance metric (default is 'mahalanobis').
+
+    Parameters
+    --------------------
+    P : numpy.ndarray
+        A 2D numpy array containing the set of points for which the confidence region is to be calculated.
+    p : {int, optional}
+        The confidence level, expressed as a percentage. Defaults to 95.
+    space_dist : str, optional
+        The distance metric to use for calculating the confidence region. Can be either 'mahalanobis' or 'mahalanobis2d'. Defaults to 'mahalanobis'.
+
+    Returns
+    --------------------
+    Psorted_cropped : numpy.ndarray: A numpy array containing the points that fall within the specified confidence region, within the mahalanobis distance metric.
+
+    Raises
+    --------------------
+    None
+    '''
     P0 = np.mean(P, axis=0)
     #print('Pm=',Pm)
     if space_dist=='mahalanobis':
@@ -95,11 +207,12 @@ def confidence_region(P, p = 95, space_dist='mahalanobis'):
     #print ("Os 95% mais próximos:", Psorted[:,:end_idx])
     return (Psorted[:end_idx,:])
 
-'''
-Get a randon subsample set
-n_list is a list containing a number of elements of each source
-'''
+
 def random_subsamples(bd,nlist):
+    '''
+    Get a random subsample set
+    n_list is a list containing a number of elements of each source
+    '''
     df_dict = bd.df_dict
     ss_dict = {}
     for i, key in enumerate(df_dict.keys()):
@@ -111,5 +224,8 @@ def random_subsamples(bd,nlist):
 Get a randon props subset
 '''
 def random_props_subset(arr,n):
-    substet = arr[np.random.choice(len(arr), n, replace=False)]
-    return substet
+    '''
+    Get a random props subset
+    '''
+    subset = arr[np.random.choice(len(arr), n, replace=False)]
+    return subset
