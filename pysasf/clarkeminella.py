@@ -26,6 +26,23 @@ from pysasf import stats
 #    return stats.confidence_region(P, p = 95, space_dist=d)
     
 #def cm_feasebles(Ps):
+    # '''
+    # Checks for feasible solutions in a larger set of solutions.
+    #
+    # Parameters
+    # --------------------
+    # Ps : numpy.ndarray
+    #     A list of proportions from a certain source, each row represents a point in the solution space.
+    #
+    # Returns
+    # --------------------
+    # Ps_feas : numpy.ndarray
+    #     A 2D array containing only the feasible solutions, in which all values are greater than zero (the basin can't have a negative amount of a certain element).
+    #
+    # Raises
+    # --------------------
+    # None
+    # '''
 #    Ps_feas = Ps[[np.all(P>0) for P in Ps]]
 #    return np.array(Ps_feas)
 
@@ -34,6 +51,34 @@ from pysasf import stats
 
 def run_repetitions_and_reduction (bd, key, reductions, percents = False,
                                    repetitions = 50, target = None):
+    '''
+    Runs multiple repetitions of subsampling and computes statistical measures for these samples.
+
+    Parameters
+    --------------------
+    bd : object
+        Basin dataset.
+
+    key : str
+        The key identifying the specific data source to be analyzed (C,E,L,Y).
+
+    reductions : list
+        A list of integers representing the number of subsamples to be taken in each reduction.
+
+    repetitions : int, optional
+        The number of repetitions for each reduction (default is 50).
+
+    Returns
+    --------------------
+    df_out : pandas.DataFrame
+
+    None
+        The function updates the internal state of the `bd` object with computed statistics.
+
+    Raises
+    --------------------
+    None
+    '''
     inicio = time.time()
     cv = lambda x: np.std(x) / np.mean(x) *100
     CVs = []
@@ -64,8 +109,28 @@ def run_repetitions_and_reduction (bd, key, reductions, percents = False,
         print ("Number of samples:", key, reductions)
 
     def compute_area(pts):
+        '''
+        Forms a ConvexHull around the points
+
+        Parameters
+        --------------------
+        pts :
+            points around which you want to draw the Convex Hull and calculate its area.
+
+        Returns
+        --------------------
+        area : float
+            float value that represents the area of the Convex Hull that encompasses the desired set of points.
+
+        Raises
+        --------------------
+        TypeError
+            If pts is not a set of numbers.
+        '''
         hull = ConvexHull(pts)
         area = hull.volume # area for 2d points
+        if isinstance(pts, (str, int, float)):
+            raise TypeError("Input pts must be a set of points.")
         return area
     
     
@@ -156,7 +221,36 @@ def run_repetitions_and_reduction (bd, key, reductions, percents = False,
 #'''
 
 #def random_subsamples(bd,nlist):
+    # '''
+    # Computes proportions from random subsamples by calculating their means and optionally plots the results.
+    #
+    # Parameters
+    # --------------------
+    # bd : object
+    #     An object containing the data sources and related methods for processing, including a dictionary of dataframes.
+    #
+    # reps : int
+    #     The number of repetitions for generating random subsamples.
+    #
+    # n_list : list
+    #     A list of integers specifying the sizes of the subsamples to be taken from the data. The length of this list must match the number of keys in `df_dict`.
+    #
+    # plot : bool, optional
+    #     A flag indicating whether to plot the results (default is True).
+    #
+    # Returns
+    # --------------------
+    # numpy.ndarray
+    #     An array of properties calculated from the subsamples, where each row corresponds to a repetition and contains the calculated properties.
+    #
+    # Raises
+    # --------------------
+    # ValueError
+    #     If the length of `n_list` does not match the number of data sources in `df_dict`.
+    # '''
 #    df_dict = bd.df_dict
+#    if len(nlist) != len(df_dict.keys()):
+#         raise ValueError("The length of nlist must match the number of keys in df_dict.")
 #    ss_dict = {}
 #    for i, key in enumerate(df_dict.keys()):
 #        data = df_dict[key].values.astype(float)
@@ -166,12 +260,39 @@ def run_repetitions_and_reduction (bd, key, reductions, percents = False,
 #'''
 #'''
 #def get_props_from_subsamples_means(bd,reps,n_list, plot=True):
+    # '''
+    # Gets proportions from subsamples by calculating means and optionally plots the results.
+    #
+    # Parameters
+    # --------------------
+    # bd : object
+    #     BasinData class instance that contains its information.
+    #
+    # reps : int
+    #     The number of repetitions for generating random subsamples.
+    #
+    # n_list : list
+    #     A list of integers specifying the sizes of the subsamples to be taken from the data.
+    #
+    # plot : bool, optional
+    #     A flag indicating whether to plot the results (default is True).
+    #
+    # Returns
+    # --------------------
+    # Ps : numpy.ndarray
+    #     Proportions. An array of proportions calculated from the subsamples, where each row corresponds to a repetition.
+    #
+    # Raises
+    # --------------------
+    # ValueError
+    #     If the length of `n_list` does not match the number of data sources in `bd`.
+    # '''
 #    df_dict = bd.df_dict
 #    Y = bd.df_dict['Y'].values.astype(float)
 #    S_inv = np.linalg.inv(np.cov(Y.T))
 #    
-#    if len(df_dict.keys())!=len(n_list):
-#        print("The n_list needs to be of the same size of lands data.")
+#    if len(df_dict.keys()) != len(n_list):
+#     raise ValueError("The n_list needs to be of the same size as the number of data sources in bd, keys in df_dict.")
 #    else:
 #        Ps = []
 #        for i in range(reps):
