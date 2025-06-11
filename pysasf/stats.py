@@ -49,29 +49,34 @@ def std(bd):
 
 
 def randon_props_subsamples(bd, key, n, only_feasebles=False, target=None):
-    Ps = bd.props
-    combs = bd.combs
-    key_idx = list(bd.df_dict.keys()).index(key)
-    size = len(bd.df_dict[key])
-    rand = np.random.choice(np.arange(size), n, replace=False)
 
+    key_idx = list(bd.df_dict.keys()).index(key) # indice da fonte
+    size = len(bd.df_dict[key]) # tamanho da amostra daquela fonte
+    rand = np.random.choice(np.arange(size), n, replace=False) # sorteia n 
+    feas = bd.feas
+    Ps = bd.props #pega as proporções já calculadas
+    combs = bd.combs
+    
     # if 'bytarget' pick only the target selected
     targets_idx = list(bd.df_dict.keys()).index('Y')
-    if target!=None:
-        Ps = bd.props[np.where(np.isin(combs[:,targets_idx],target))]
-        combs = bd.combs[np.where(np.isin(combs[:,targets_idx],target))]
-        feas = bd.feas[np.where(np.isin(combs[:,targets_idx],target))]
+    if target != None:
+        idxs = np.where(np.isin(combs[:,targets_idx],target))[0]#seleciona por target
+
+  
+    # if only_feasebles is true pick only feaselbes soluctions
+    if only_feasebles == True:
+        #print('randon_props_subsamples->only_feasebles')
+        idxs = np.where(np.isin(combs[:,key_idx],rand))[0]
+        selected_combs = combs[idxs and feas]
+        selected_Ps = Ps[idxs and feas]
+
     else:
-        feas = bd.feas
-    
-    if only_feasebles == False:
         selected_combs = combs[np.where(np.isin(combs[:,key_idx],rand))]
         selected_Ps = Ps[np.where(np.isin(combs[:,key_idx],rand))]
-    else:
-        #print('randon_props_subsamples->only_feasebles')
-        selected_combs = combs[np.where(np.isin(combs[:,key_idx],rand) & feas)]
-        selected_Ps = Ps[np.where(np.isin(combs[:,key_idx],rand) & feas)]
+        
     return selected_combs, selected_Ps
+
+
 
 '''
 Calculate de confidence region

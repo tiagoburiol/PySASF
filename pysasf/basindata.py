@@ -152,7 +152,7 @@ class BasinData:
         self.set_output_folder(output_folder)
         if fileformat == 'txt':          
             if numberformat =='int':
-                np.savetxt(self.output_folder+'/'+filename+'.'+fileformat,array, fmt='%s')
+                np.savetxt(self.output_folder+'/'+filename+'.'+fileformat,array, fmt='%1.0f')
             if numberformat =='float32':
                 np.savetxt(self.output_folder+'/'+filename+'.'+fileformat,array, fmt='%1.4f')
         if fileformat == 'gzip':
@@ -192,7 +192,7 @@ class BasinData:
     def load_feasebles_from_file(self,ff):
         print('Loading feasebles proportion indexes from:', self.output_folder)
         if ff[-3:]=='txt':
-            feas = np.loadtxt(ff).astype(int)
+            feas = np.loadtxt(ff)
             self.feas = feas.ravel().astype(bool)
         if ff[-4:]=='gzip':
             import pyarrow.parquet as pq

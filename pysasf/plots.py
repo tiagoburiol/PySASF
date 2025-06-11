@@ -121,5 +121,34 @@ def data_histo(bd):
         df = bd.df_dict[s]
         df.hist()
 
+'''
+Data is a nSources x nReducts x nProps
+Sources is a string list of sources key for labels
+Reductions e a list of numbers of samples or percentages for reductions
+ '''
+def boxplot(data, sources, reductions, in_percents = True):
+    
+# Dados de exemplo
+#dados = [np.random.normal(50, 10, 200), np.random.normal(60, 15, 200)]
+
+# Criando o boxplot com personalização
+    box = plt.boxplot(dados, 
+                  vert=True, 
+                  patch_artist=True, 
+                  notch=True, 
+                  showmeans=True, 
+                  labels=['Conjunto 1', 'Conjunto 2'])
+
+# Personalizando as cores
+#cores = ['lightblue', 'lightgreen']
+#for patch, cor in zip(box['boxes'], cores):
+#    patch.set_facecolor(cor)
+
+# Adicionando rótulos
+#plt.title('Boxplot Personalizado')
+#plt.ylabel('Valores')
+
+# Exibindo o gráfico
+#plt.show()
 
 
